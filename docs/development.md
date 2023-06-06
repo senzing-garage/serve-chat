@@ -68,7 +68,7 @@ Since the Senzing library is a prerequisite, it must be installed first.
     ```
 
 1. Modify
-   [senzingchatservice.go](https://github.com/Senzing/serve-chat/blob/main/senzingchatservice/senzingchatservice.go).
+   [senzingchatservice.go](../senzingchatservice/senzingchatservice.go).
 1. Test.
 
     ```console
