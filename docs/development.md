@@ -31,6 +31,30 @@ Since the Senzing library is a prerequisite, it must be installed first.
 1. Using the environment variables values just set, follow steps in
    [clone-repository](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/clone-repository.md) to install the Git repository.
 
+## Make a test database
+
+1. Install
+   [senzing-tools](https://github.com/Senzing/senzing-tools#install).
+1. Create database.
+   **Note:** The database location in the following example matches what's in the `Makefile`.
+   Example:
+
+    ```console
+    export LD_LIBRARY_PATH=/opt/senzing/g2/lib/
+    senzing-tools init-database --database-url sqlite3://na:na@/tmp/sqlite/G2C.db
+    ```
+
+## Run
+
+1. Run without a build.
+   Example:
+
+     ```console
+     cd ${GIT_REPOSITORY_DIR}
+     make run
+
+     ```
+
 ## Build
 
 1. Build the binaries.
@@ -113,6 +137,7 @@ the reference can be found by clicking on the following badge at the top of the 
 
     ```console
     docker run \
+      --publish 8262:8262 ]
       --rm \
       senzing/serve-chat
 

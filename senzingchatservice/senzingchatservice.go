@@ -3,13 +3,15 @@ package senzingchatservice
 import (
 	"context"
 	_ "embed"
+	"fmt"
 	"sync"
 
 	"github.com/senzing/g2-sdk-go/g2api"
+	"github.com/senzing/g2-sdk-go/senzing"
 	"github.com/senzing/go-logging/logging"
 	"github.com/senzing/go-observing/observer"
 	"github.com/senzing/go-sdk-abstract-factory/factory"
-	"github.com/senzing/serve-chat/senzingchatapi"
+	api "github.com/senzing/serve-chat/senzingchatapi"
 	"google.golang.org/grpc"
 )
 
@@ -19,18 +21,15 @@ import (
 
 // ChatApiServiceImpl is...
 type ChatApiServiceImpl struct {
-	senzingchatapi.UnimplementedHandler
+	api.UnimplementedHandler
 	abstractFactory                factory.SdkAbstractFactory
 	abstractFactorySyncOnce        sync.Once
-	g2configmgrSingleton           g2api.G2configmgr
-	g2configmgrSyncOnce            sync.Once
-	g2configSingleton              g2api.G2config
-	g2configSyncOnce               sync.Once
+	g2engineSingleton              g2api.G2engine
+	g2engineSyncOnce               sync.Once
 	g2productSingleton             g2api.G2product
 	g2productSyncOnce              sync.Once
 	GrpcDialOptions                []grpc.DialOption
 	GrpcTarget                     string
-	isTrace                        bool
 	logger                         logging.LoggingInterface
 	LogLevelName                   string
 	ObserverOrigin                 string
@@ -44,142 +43,148 @@ type ChatApiServiceImpl struct {
 }
 
 // ----------------------------------------------------------------------------
-// Variables
-// ----------------------------------------------------------------------------
-
-var debugOptions []interface{} = []interface{}{
-	&logging.OptionCallerSkip{Value: 5},
-}
-
-var traceOptions []interface{} = []interface{}{
-	&logging.OptionCallerSkip{Value: 5},
-}
-
-// ----------------------------------------------------------------------------
 // internal methods
 // ----------------------------------------------------------------------------
 
 // --- Logging ----------------------------------------------------------------
 
 // Get the Logger singleton.
-func (restApiService *ChatApiServiceImpl) getLogger() logging.LoggingInterface {
+func (chatApiService *ChatApiServiceImpl) getLogger() logging.LoggingInterface {
 	var err error = nil
-	if restApiService.logger == nil {
+	if chatApiService.logger == nil {
 		loggerOptions := []interface{}{
 			&logging.OptionCallerSkip{Value: 3},
 		}
-		restApiService.logger, err = logging.NewSenzingToolsLogger(ComponentId, IdMessages, loggerOptions...)
+		chatApiService.logger, err = logging.NewSenzingToolsLogger(ComponentId, IdMessages, loggerOptions...)
 		if err != nil {
 			panic(err)
 		}
 	}
-	return restApiService.logger
+	return chatApiService.logger
 }
 
 // Log message.
-func (restApiService *ChatApiServiceImpl) log(messageNumber int, details ...interface{}) {
-	restApiService.getLogger().Log(messageNumber, details...)
-}
-
-// Debug.
-func (restApiService *ChatApiServiceImpl) debug(messageNumber int, details ...interface{}) {
-	details = append(details, debugOptions...)
-	restApiService.getLogger().Log(messageNumber, details...)
-}
-
-// Trace method entry.
-func (restApiService *ChatApiServiceImpl) traceEntry(messageNumber int, details ...interface{}) {
-	restApiService.getLogger().Log(messageNumber, details...)
-}
-
-// Trace method exit.
-func (restApiService *ChatApiServiceImpl) traceExit(messageNumber int, details ...interface{}) {
-	restApiService.getLogger().Log(messageNumber, details...)
+func (chatApiService *ChatApiServiceImpl) log(messageNumber int, details ...interface{}) {
+	chatApiService.getLogger().Log(messageNumber, details...)
 }
 
 // --- Errors -----------------------------------------------------------------
 
 // Create error.
-func (restApiService *ChatApiServiceImpl) error(messageNumber int, details ...interface{}) error {
-	return restApiService.getLogger().NewError(messageNumber, details...)
+func (chatApiService *ChatApiServiceImpl) error(messageNumber int, details ...interface{}) error {
+	return chatApiService.getLogger().NewError(messageNumber, details...)
 }
 
 // --- Services ---------------------------------------------------------------
 
-func (restApiService *ChatApiServiceImpl) getAbstractFactory() factory.SdkAbstractFactory {
-	restApiService.abstractFactorySyncOnce.Do(func() {
-		if len(restApiService.GrpcTarget) == 0 {
-			restApiService.abstractFactory = &factory.SdkAbstractFactoryImpl{}
+func (chatApiService *ChatApiServiceImpl) getAbstractFactory() factory.SdkAbstractFactory {
+	chatApiService.abstractFactorySyncOnce.Do(func() {
+		if len(chatApiService.GrpcTarget) == 0 {
+			chatApiService.abstractFactory = &factory.SdkAbstractFactoryImpl{}
 		} else {
-			restApiService.abstractFactory = &factory.SdkAbstractFactoryImpl{
-				GrpcDialOptions: restApiService.GrpcDialOptions,
-				GrpcTarget:      restApiService.GrpcTarget,
-				ObserverOrigin:  restApiService.ObserverOrigin,
-				Observers:       restApiService.Observers,
+			chatApiService.abstractFactory = &factory.SdkAbstractFactoryImpl{
+				GrpcDialOptions: chatApiService.GrpcDialOptions,
+				GrpcTarget:      chatApiService.GrpcTarget,
+				ObserverOrigin:  chatApiService.ObserverOrigin,
+				Observers:       chatApiService.Observers,
 			}
 		}
 	})
-	return restApiService.abstractFactory
-}
-
-// Singleton pattern for g2config.
-// See https://medium.com/golang-issue/how-singleton-pattern-works-with-golang-2fdd61cd5a7f
-func (restApiService *ChatApiServiceImpl) getG2config(ctx context.Context) g2api.G2config {
-	var err error = nil
-	restApiService.g2configSyncOnce.Do(func() {
-		restApiService.g2configSingleton, err = restApiService.getAbstractFactory().GetG2config(ctx)
-		if err != nil {
-			panic(err)
-		}
-		if restApiService.g2configSingleton.GetSdkId(ctx) == factory.ImplementedByBase {
-			err = restApiService.g2configSingleton.Init(ctx, restApiService.SenzingModuleName, restApiService.SenzingEngineConfigurationJson, restApiService.SenzingVerboseLogging)
-			if err != nil {
-				panic(err)
-			}
-		}
-	})
-	return restApiService.g2configSingleton
-}
-
-// Singleton pattern for g2config.
-// See https://medium.com/golang-issue/how-singleton-pattern-works-with-golang-2fdd61cd5a7f
-func (restApiService *ChatApiServiceImpl) getG2configmgr(ctx context.Context) g2api.G2configmgr {
-	var err error = nil
-	restApiService.g2configmgrSyncOnce.Do(func() {
-		restApiService.g2configmgrSingleton, err = restApiService.getAbstractFactory().GetG2configmgr(ctx)
-		if err != nil {
-			panic(err)
-		}
-		if restApiService.g2configmgrSingleton.GetSdkId(ctx) == factory.ImplementedByBase {
-			err = restApiService.g2configmgrSingleton.Init(ctx, restApiService.SenzingModuleName, restApiService.SenzingEngineConfigurationJson, restApiService.SenzingVerboseLogging)
-			if err != nil {
-				panic(err)
-			}
-		}
-	})
-	return restApiService.g2configmgrSingleton
+	return chatApiService.abstractFactory
 }
 
 // Singleton pattern for g2product.
 // See https://medium.com/golang-issue/how-singleton-pattern-works-with-golang-2fdd61cd5a7f
-func (restApiService *ChatApiServiceImpl) getG2product(ctx context.Context) g2api.G2product {
+func (chatApiService *ChatApiServiceImpl) getG2engine(ctx context.Context) g2api.G2engine {
 	var err error = nil
-	restApiService.g2productSyncOnce.Do(func() {
-		restApiService.g2productSingleton, err = restApiService.getAbstractFactory().GetG2product(ctx)
+	chatApiService.g2engineSyncOnce.Do(func() {
+		chatApiService.g2engineSingleton, err = chatApiService.getAbstractFactory().GetG2engine(ctx)
 		if err != nil {
 			panic(err)
 		}
-		if restApiService.g2productSingleton.GetSdkId(ctx) == factory.ImplementedByBase {
-			err = restApiService.g2productSingleton.Init(ctx, restApiService.SenzingModuleName, restApiService.SenzingEngineConfigurationJson, restApiService.SenzingVerboseLogging)
+		if chatApiService.g2engineSingleton.GetSdkId(ctx) == factory.ImplementedByBase {
+			err = chatApiService.g2engineSingleton.Init(ctx, chatApiService.SenzingModuleName, chatApiService.SenzingEngineConfigurationJson, chatApiService.SenzingVerboseLogging)
 			if err != nil {
 				panic(err)
 			}
 		}
 	})
-	return restApiService.g2productSingleton
+	return chatApiService.g2engineSingleton
+}
+
+// Singleton pattern for g2product.
+// See https://medium.com/golang-issue/how-singleton-pattern-works-with-golang-2fdd61cd5a7f
+func (chatApiService *ChatApiServiceImpl) getG2product(ctx context.Context) g2api.G2product {
+	var err error = nil
+	chatApiService.g2productSyncOnce.Do(func() {
+		chatApiService.g2productSingleton, err = chatApiService.getAbstractFactory().GetG2product(ctx)
+		if err != nil {
+			panic(err)
+		}
+		if chatApiService.g2productSingleton.GetSdkId(ctx) == factory.ImplementedByBase {
+			err = chatApiService.g2productSingleton.Init(ctx, chatApiService.SenzingModuleName, chatApiService.SenzingEngineConfigurationJson, chatApiService.SenzingVerboseLogging)
+			if err != nil {
+				panic(err)
+			}
+		}
+	})
+	return chatApiService.g2productSingleton
 }
 
 // ----------------------------------------------------------------------------
 // Interface methods
-// See https://github.com/docktermj/go-rest-api-client/blob/main/senzingrestpapi/oas_unimplemented_gen.go
+// See https://github.com/senzing/serve-chat/blob/main/senzingchatpapi/oas_unimplemented_gen.go
 // ----------------------------------------------------------------------------
+
+// AddPet implements addPet operation.
+//
+// Add a new pet to the store.
+//
+// POST /pet
+func (chatApiService *ChatApiServiceImpl) AddPet(ctx context.Context, req *api.Pet) (r *api.Pet, _ error) {
+	response, err := chatApiService.getG2product(ctx).Version(ctx)
+	if err != nil {
+		return r, err
+	}
+	parsedResponse, err := senzing.ParseProductVersionResponse(ctx, response)
+	if err != nil {
+		return r, err
+	}
+	r = &api.Pet{
+		ID:     api.NewOptInt64(1001),
+		Name:   parsedResponse.BuildVersion,
+		Status: api.NewOptPetStatus(api.PetStatusAvailable),
+	}
+
+	// Example logging.
+
+	chatApiService.log(1, r, err)
+
+	// Example error generation.
+
+	newErr := chatApiService.error(2, "example error")
+	if false {
+		fmt.Printf(">>> An example error: %+v\n", newErr)
+	}
+	return r, err
+}
+
+// GetPetById implements getPetById operation.
+//
+// Returns a single pet.
+//
+// GET /pet/{petId}
+func (chatApiService *ChatApiServiceImpl) GetPetById(ctx context.Context, params api.GetPetByIdParams) (r api.GetPetByIdRes, _ error) {
+	var err error = nil
+	response, err := chatApiService.getG2engine(ctx).GetEntityByEntityID(ctx, params.PetId)
+	if err != nil {
+		return r, err
+	}
+
+	r = &api.Pet{
+		ID:     api.NewOptInt64(params.PetId),
+		Name:   response,
+		Status: api.NewOptPetStatus(api.PetStatusAvailable),
+	}
+	return r, err
+}

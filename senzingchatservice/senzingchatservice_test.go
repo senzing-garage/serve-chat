@@ -72,13 +72,13 @@ func teardown() error {
 // Test interface functions
 // ----------------------------------------------------------------------------
 
-func TestRestApiServiceImpl_Null(test *testing.T) {
+func TestChatApiServiceImpl_AddPet(test *testing.T) {
 }
 
 // ----------------------------------------------------------------------------
 // Examples for godoc documentation
 // ----------------------------------------------------------------------------
 
-func ExampleRestApiServiceImpl_Null() {
+func ExampleChatApiServiceImpl_AddPet() {
 
 }

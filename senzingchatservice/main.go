@@ -15,8 +15,9 @@ type ChatApiService interface {
 // Constants
 // ----------------------------------------------------------------------------
 
-// Identfier of the  package found messages having the format "senzing-6503xxxx".
-const ComponentId = 9999
+// Identfier of the  package found messages having the format "senzing-6620xxxx".
+// See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+const ComponentId = 6620
 
 // Log message prefix.
 const Prefix = "serve-chat.chatapiservice."
@@ -27,7 +28,13 @@ const Prefix = "serve-chat.chatapiservice."
 
 // Message templates for g2config implementations.
 var IdMessages = map[int]string{
-	10: "Enter " + Prefix + "InitializeSenzing().",
+	0001: "Example Trace log.",
+	1000: "Example Debug log.",
+	2000: "Example Info log.",
+	3000: "Example Warn log.",
+	4000: "Example Error log.",
+	5000: "Example Fatal log.",
+	6000: "Example Panic log.",
 }
 
 // Status strings for specific messages.
