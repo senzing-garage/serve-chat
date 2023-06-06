@@ -192,7 +192,7 @@ the reference can be found by clicking on the following badge at the top of the 
 
     ```console
     export LD_LIBRARY_PATH=/opt/senzing/g2/lib/
-    serve-chat --database-url sqlite3://na:na@/tmp/sqlite/G2C.db
+    serve-chat --database-url sqlite3://na:na@/tmp/sqlite/G2C.db --enable-all
 
     ```
 
