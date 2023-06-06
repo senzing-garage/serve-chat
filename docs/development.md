@@ -55,6 +55,8 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
      ```
 
+1. Open a web browser at [localhost:8262](http://localhost:8262).
+
 ## Build
 
 1. Build the binaries.
@@ -137,7 +139,7 @@ the reference can be found by clicking on the following badge at the top of the 
 
     ```console
     docker run \
-      --publish 8262:8262 ]
+      --publish 8262:8262 \
       --rm \
       senzing/serve-chat
 
