@@ -44,6 +44,40 @@ Since the Senzing library is a prerequisite, it must be installed first.
     senzing-tools init-database --database-url sqlite3://na:na@/tmp/sqlite/G2C.db
     ```
 
+## Development cycle
+
+1. Get latest version of [ogen](https://github.com/ogen-go/ogen) code generator.
+   Do this frequently (i.e. daily), as code is changing constantly.
+   Example:
+
+    ```console
+    go get -d github.com/ogen-go/ogen
+    ```
+
+1. Modify
+   [openapi.json](../cmd/openapi.json).
+   **Note:** It must be `json`.  For some reason `yaml` doesn't work.
+1. Generate code from
+   [openapi.json](../cmd/openapi.json).
+   Example:
+
+    ```console
+     cd ${GIT_REPOSITORY_DIR}
+     make generate
+
+    ```
+
+1. Modify
+   [senzingchatservice.go](https://github.com/Senzing/serve-chat/blob/main/senzingchatservice/senzingchatservice.go).
+1. Test.
+
+    ```console
+   cd ${GIT_REPOSITORY_DIR}
+   make test
+   make run
+
+    ```
+
 ## Run
 
 1. Run without a build.
