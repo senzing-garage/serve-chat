@@ -4,30 +4,60 @@ package cmd
 
 import (
 	"context"
+	_ "embed"
 	"fmt"
+	"log"
+	"net"
 	"os"
 	"strings"
+	"time"
 
+	"github.com/senzing/go-common/g2engineconfigurationjson"
+	"github.com/senzing/go-grpcing/grpcurl"
+	"github.com/senzing/go-observing/observer"
 	"github.com/senzing/senzing-tools/constant"
 	"github.com/senzing/senzing-tools/envar"
 	"github.com/senzing/senzing-tools/helper"
 	"github.com/senzing/senzing-tools/option"
-	"github.com/senzing/serve-chat/examplepackage"
+	"github.com/senzing/serve-chat/httpserver"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"google.golang.org/grpc"
 )
 
 const (
 	defaultConfiguration           string = ""
+	defaultDatabaseUrl             string = ""
+	defaultEnableAll               bool   = false
+	defaultEnableSenzingChatApi    bool   = false
+	defaultEnableSwaggerUI         bool   = false
 	defaultEngineConfigurationJson string = ""
 	defaultEngineLogLevel          int    = 0
+	defaultGrpcUrl                        = ""
+	defaultHttpPort                int    = 8262
 	defaultLogLevel                string = "INFO"
+	defaultObserverOrigin          string = "serve-chat"
+	defaultObserverUrl             string = ""
+	defaultServerAddress           string = "0.0.0.0"
+	envarEnableAll                 string = "SENZING_TOOLS_ENABLE_ALL"
+	envarEnableSenzingChatApi      string = "SENZING_TOOLS_ENABLE_SENZING_CHAT_API"
+	envarServerAddress             string = "SENZING_TOOLS_SERVER_ADDRESS"
+	optionEnableAll                string = "enable-all"
+	optionEnableSenzingChatApi     string = "enable-senzing-chat-api"
+	optionServerAddress            string = "server-address"
 	Short                          string = "serve-chat short description"
-	Use                            string = "serve=chat"
+	Use                            string = "serve-chat"
 	Long                           string = `
-serve-chat long description.
-	`
+ serve-chat long description.
+	 `
 )
+
+var (
+	defaultEngineModuleName string = fmt.Sprintf("serve-http-%d", time.Now().Unix())
+)
+
+//go:embed openapi.json
+var openApiSpecification []byte
 
 // ----------------------------------------------------------------------------
 // Private functions
@@ -35,10 +65,20 @@ serve-chat long description.
 
 // Since init() is always invoked, define command line parameters.
 func init() {
+	RootCmd.Flags().Bool(option.EnableSwaggerUi, defaultEnableSwaggerUI, fmt.Sprintf("Enable the Swagger UI service [%s]", envar.EnableSwaggerUi))
+	RootCmd.Flags().Bool(optionEnableAll, defaultEnableSwaggerUI, fmt.Sprintf("Enable all services [%s]", envarEnableAll))
+	RootCmd.Flags().Bool(optionEnableSenzingChatApi, defaultEnableSwaggerUI, fmt.Sprintf("Enable the Senzing Chat API service [%s]", envarEnableSenzingChatApi))
 	RootCmd.Flags().Int(option.EngineLogLevel, defaultEngineLogLevel, fmt.Sprintf("Log level for Senzing Engine [%s]", envar.EngineLogLevel))
+	RootCmd.Flags().Int(option.HttpPort, defaultHttpPort, fmt.Sprintf("Port to serve HTTP [%s]", envar.HttpPort))
 	RootCmd.Flags().String(option.Configuration, defaultConfiguration, fmt.Sprintf("Path to configuration file [%s]", envar.Configuration))
+	RootCmd.Flags().String(option.DatabaseUrl, defaultDatabaseUrl, fmt.Sprintf("URL of database to initialize [%s]", envar.DatabaseUrl))
 	RootCmd.Flags().String(option.EngineConfigurationJson, defaultEngineConfigurationJson, fmt.Sprintf("JSON string sent to Senzing's init() function [%s]", envar.EngineConfigurationJson))
+	RootCmd.Flags().String(option.EngineModuleName, defaultEngineModuleName, fmt.Sprintf("Identifier given to the Senzing engine [%s]", envar.EngineModuleName))
+	RootCmd.Flags().String(option.GrpcUrl, defaultGrpcUrl, fmt.Sprintf("URL of Senzing gRPC service [%s]", envar.GrpcUrl))
 	RootCmd.Flags().String(option.LogLevel, defaultLogLevel, fmt.Sprintf("Log level [%s]", envar.LogLevel))
+	RootCmd.Flags().String(option.ObserverOrigin, defaultObserverOrigin, fmt.Sprintf("Identify this instance to the Observer [%s]", envar.ObserverOrigin))
+	RootCmd.Flags().String(option.ObserverUrl, defaultObserverUrl, fmt.Sprintf("URL of Observer [%s]", envar.ObserverUrl))
+	RootCmd.Flags().String(optionServerAddress, defaultServerAddress, fmt.Sprintf("IP interface server listens on [%s]", envarServerAddress))
 }
 
 // If a configuration file is present, load it.
@@ -59,14 +99,14 @@ func loadConfigurationFile(cobraCommand *cobra.Command) {
 
 		// Specify configuration file name.
 
-		viper.SetConfigName("serve-chat")
+		viper.SetConfigName("serve-http")
 		viper.SetConfigType("yaml")
 
 		// Define search path order.
 
-		viper.AddConfigPath(home + "/.senzing-tools")
+		viper.AddConfigPath(home + "/.serve-chat")
 		viper.AddConfigPath(home)
-		viper.AddConfigPath("/etc/senzing-tools")
+		viper.AddConfigPath("/etc/serve-chat")
 	}
 
 	// If a config file is found, read it in.
@@ -84,10 +124,26 @@ func loadOptions(cobraCommand *cobra.Command) {
 	viper.SetEnvKeyReplacer(replacer)
 	viper.SetEnvPrefix(constant.SetEnvPrefix)
 
+	// Bools
+
+	boolOptions := map[string]bool{
+		option.EnableSwaggerUi:     defaultEnableSwaggerUI,
+		optionEnableAll:            defaultEnableAll,
+		optionEnableSenzingChatApi: defaultEnableSenzingChatApi,
+	}
+	for optionKey, optionValue := range boolOptions {
+		viper.SetDefault(optionKey, optionValue)
+		err = viper.BindPFlag(optionKey, cobraCommand.Flags().Lookup(optionKey))
+		if err != nil {
+			panic(err)
+		}
+	}
+
 	// Ints
 
 	intOptions := map[string]int{
 		option.EngineLogLevel: defaultEngineLogLevel,
+		option.HttpPort:       defaultHttpPort,
 	}
 	for optionKey, optionValue := range intOptions {
 		viper.SetDefault(optionKey, optionValue)
@@ -100,8 +156,15 @@ func loadOptions(cobraCommand *cobra.Command) {
 	// Strings
 
 	stringOptions := map[string]string{
+		option.Configuration:           defaultConfiguration,
+		option.DatabaseUrl:             defaultDatabaseUrl,
 		option.EngineConfigurationJson: defaultEngineConfigurationJson,
+		option.EngineModuleName:        defaultEngineModuleName,
+		option.GrpcUrl:                 defaultGrpcUrl,
 		option.LogLevel:                defaultLogLevel,
+		option.ObserverOrigin:          defaultObserverOrigin,
+		option.ObserverUrl:             defaultObserverUrl,
+		optionServerAddress:            defaultServerAddress,
 	}
 	for optionKey, optionValue := range stringOptions {
 		viper.SetDefault(optionKey, optionValue)
@@ -110,6 +173,43 @@ func loadOptions(cobraCommand *cobra.Command) {
 			panic(err)
 		}
 	}
+
+	// StringSlice
+
+	stringSliceOptions := map[string][]string{}
+	for optionKey, optionValue := range stringSliceOptions {
+		viper.SetDefault(optionKey, optionValue)
+		err = viper.BindPFlag(optionKey, cobraCommand.Flags().Lookup(optionKey))
+		if err != nil {
+			panic(err)
+		}
+	}
+
+}
+
+// --- Networking -------------------------------------------------------------
+
+func getOutboundIP() net.IP {
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func() {
+		if err := conn.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+	return localAddr.IP
+}
+
+func getDefaultAllowedHostnames() []string {
+	result := []string{"localhost"}
+	outboundIpAddress := getOutboundIP().String()
+	if len(outboundIpAddress) > 0 {
+		result = append(result, outboundIpAddress)
+	}
+	return result
 }
 
 // ----------------------------------------------------------------------------
@@ -136,10 +236,56 @@ func PreRun(cobraCommand *cobra.Command, args []string) {
 func RunE(_ *cobra.Command, _ []string) error {
 	var err error = nil
 	ctx := context.TODO()
-	examplePackage := &examplepackage.ExamplePackageImpl{
-		Something: "Main says 'Hi!'",
+
+	// Build senzingEngineConfigurationJson.
+
+	senzingEngineConfigurationJson := viper.GetString(option.EngineConfigurationJson)
+	if len(senzingEngineConfigurationJson) == 0 {
+		senzingEngineConfigurationJson, err = g2engineconfigurationjson.BuildSimpleSystemConfigurationJson(viper.GetString(option.DatabaseUrl))
+		if err != nil {
+			return err
+		}
 	}
-	err = examplePackage.SaySomething(ctx)
+
+	// Determine if gRPC is being used.
+
+	grpcUrl := viper.GetString(option.GrpcUrl)
+	grpcTarget := ""
+	grpcDialOptions := []grpc.DialOption{}
+	if len(grpcUrl) > 0 {
+		grpcTarget, grpcDialOptions, err = grpcurl.Parse(ctx, grpcUrl)
+		if err != nil {
+			return err
+		}
+	}
+
+	// Build observers.
+	//  viper.GetString(option.ObserverUrl),
+
+	observers := []observer.Observer{}
+
+	// Create object and Serve.
+
+	httpServer := &httpserver.HttpServerImpl{
+		ChatUrlRoutePrefix:             "chat",
+		EnableAll:                      viper.GetBool(optionEnableAll),
+		EnableSenzingChatAPI:           viper.GetBool(optionEnableSenzingChatApi),
+		EnableSwaggerUI:                viper.GetBool(option.EnableSwaggerUi),
+		GrpcDialOptions:                grpcDialOptions,
+		GrpcTarget:                     grpcTarget,
+		LogLevelName:                   viper.GetString(option.LogLevel),
+		ObserverOrigin:                 viper.GetString(option.ObserverOrigin),
+		Observers:                      observers,
+		OpenApiSpecification:           openApiSpecification,
+		ReadHeaderTimeout:              60 * time.Second,
+		SenzingEngineConfigurationJson: senzingEngineConfigurationJson,
+		SenzingModuleName:              viper.GetString(option.EngineModuleName),
+		SenzingVerboseLogging:          viper.GetInt(option.EngineLogLevel),
+		ServerAddress:                  viper.GetString(optionServerAddress),
+		ServerPort:                     viper.GetInt(option.HttpPort),
+		SwaggerUrlRoutePrefix:          "swagger",
+	}
+	err = httpServer.Serve(ctx)
 	return err
 }
 
