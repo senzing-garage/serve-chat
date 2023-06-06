@@ -25,6 +25,7 @@ CC = gcc
 # Example: "export LD_LIBRARY_PATH=/path/to/my/senzing/g2/lib"
 
 LD_LIBRARY_PATH ?= /opt/senzing/g2/lib
+SENZING_TOOLS_DATABASE_URL ?= sqlite3://na:na@/tmp/sqlite/G2C.db
 
 # Export environment variables.
 
@@ -36,6 +37,15 @@ LD_LIBRARY_PATH ?= /opt/senzing/g2/lib
 
 .PHONY: default
 default: help
+
+
+# -----------------------------------------------------------------------------
+# Generate
+# -----------------------------------------------------------------------------
+
+.PHONY: generate
+generate:
+	@go generate ./...
 
 # -----------------------------------------------------------------------------
 # Build
@@ -140,7 +150,7 @@ package: docker-build-package
 
 .PHONY: run
 run:
-	@go run main.go
+	@go run main.go --enable-all
 
 
 .PHONY: docker-run

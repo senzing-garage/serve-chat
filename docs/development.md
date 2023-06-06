@@ -31,6 +31,66 @@ Since the Senzing library is a prerequisite, it must be installed first.
 1. Using the environment variables values just set, follow steps in
    [clone-repository](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/clone-repository.md) to install the Git repository.
 
+## Make a test database
+
+1. Install
+   [senzing-tools](https://github.com/Senzing/senzing-tools#install).
+1. Create database.
+   **Note:** The database location in the following example matches what's in the `Makefile`.
+   Example:
+
+    ```console
+    export LD_LIBRARY_PATH=/opt/senzing/g2/lib/
+    senzing-tools init-database --database-url sqlite3://na:na@/tmp/sqlite/G2C.db
+    ```
+
+## Development cycle
+
+1. Get latest version of [ogen](https://github.com/ogen-go/ogen) code generator.
+   Do this frequently (i.e. daily), as code is changing constantly.
+   Example:
+
+    ```console
+    go get -d github.com/ogen-go/ogen
+    ```
+
+1. Modify
+   [openapi.json](../cmd/openapi.json).
+   **Note:** It must be `json`.  For some reason `yaml` doesn't work.
+1. Generate code from
+   [openapi.json](../cmd/openapi.json).
+   Example:
+
+    ```console
+     cd ${GIT_REPOSITORY_DIR}
+     make generate
+
+    ```
+
+1. Modify
+   [senzingchatservice.go](../senzingchatservice/senzingchatservice.go).
+1. Test.
+
+    ```console
+   cd ${GIT_REPOSITORY_DIR}
+   make test
+   make run
+
+    ```
+
+## Run
+
+1. Run without a build.
+   Example:
+
+     ```console
+     cd ${GIT_REPOSITORY_DIR}
+     make run
+
+     ```
+
+1. Open a web browser at [localhost:8262](http://localhost:8262).
+
 ## Build
 
 1. Build the binaries.
@@ -113,8 +173,11 @@ the reference can be found by clicking on the following badge at the top of the 
 
     ```console
     docker run \
+      --env SENZING_TOOLS_DATABASE_URL=sqlite3://na:na@/tmp/sqlite/G2C.db \
+      --publish 8262:8262 \
       --rm \
-      senzing/serve-chat
+      --volume /tmp/sqlite:/tmp/sqlite \
+      senzing/serve-chat --enable-all
 
     ```
 
@@ -162,7 +225,8 @@ the reference can be found by clicking on the following badge at the top of the 
    Example:
 
     ```console
-    serve-chat
+    export LD_LIBRARY_PATH=/opt/senzing/g2/lib/
+    serve-chat --database-url sqlite3://na:na@/tmp/sqlite/G2C.db --enable-all
 
     ```
 
