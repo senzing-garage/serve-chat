@@ -53,7 +53,7 @@ const (
 )
 
 var (
-	defaultEngineModuleName string = fmt.Sprintf("serve-http-%d", time.Now().Unix())
+	defaultEngineModuleName string = fmt.Sprintf("serve-chat-%d", time.Now().Unix())
 )
 
 //go:embed openapi.json
@@ -99,7 +99,7 @@ func loadConfigurationFile(cobraCommand *cobra.Command) {
 
 		// Specify configuration file name.
 
-		viper.SetConfigName("serve-http")
+		viper.SetConfigName("serve-chat")
 		viper.SetConfigType("yaml")
 
 		// Define search path order.
