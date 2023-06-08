@@ -1,6 +1,10 @@
 package senzingchatservice
 
-import "github.com/senzing/serve-chat/senzingchatapi"
+import (
+	_ "embed"
+
+	"github.com/senzing/serve-chat/senzingchatapi"
+)
 
 // ----------------------------------------------------------------------------
 // Types
@@ -39,3 +43,9 @@ var IdMessages = map[int]string{
 
 // Status strings for specific messages.
 var IdStatuses = map[int]string{}
+
+//go:embed openapi.json
+var OpenApiSpecificationJson []byte
+
+//go:embed openapi.yaml
+var OpenApiSpecificationYaml []byte

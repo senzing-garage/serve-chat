@@ -4,10 +4,7 @@ package cmd
 
 import (
 	"context"
-	_ "embed"
 	"fmt"
-	"log"
-	"net"
 	"os"
 	"strings"
 	"time"
@@ -20,6 +17,7 @@ import (
 	"github.com/senzing/senzing-tools/helper"
 	"github.com/senzing/senzing-tools/option"
 	"github.com/senzing/serve-chat/httpserver"
+	"github.com/senzing/serve-chat/senzingchatservice"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -55,9 +53,6 @@ const (
 var (
 	defaultEngineModuleName string = fmt.Sprintf("serve-chat-%d", time.Now().Unix())
 )
-
-//go:embed openapi.json
-var openApiSpecification []byte
 
 // ----------------------------------------------------------------------------
 // Private functions
@@ -187,31 +182,6 @@ func loadOptions(cobraCommand *cobra.Command) {
 
 }
 
-// --- Networking -------------------------------------------------------------
-
-func getOutboundIP() net.IP {
-	conn, err := net.Dial("udp", "8.8.8.8:80")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer func() {
-		if err := conn.Close(); err != nil {
-			panic(err)
-		}
-	}()
-	localAddr := conn.LocalAddr().(*net.UDPAddr)
-	return localAddr.IP
-}
-
-func getDefaultAllowedHostnames() []string {
-	result := []string{"localhost"}
-	outboundIpAddress := getOutboundIP().String()
-	if len(outboundIpAddress) > 0 {
-		result = append(result, outboundIpAddress)
-	}
-	return result
-}
-
 // ----------------------------------------------------------------------------
 // Public functions
 // ----------------------------------------------------------------------------
@@ -276,7 +246,7 @@ func RunE(_ *cobra.Command, _ []string) error {
 		LogLevelName:                   viper.GetString(option.LogLevel),
 		ObserverOrigin:                 viper.GetString(option.ObserverOrigin),
 		Observers:                      observers,
-		OpenApiSpecification:           openApiSpecification,
+		OpenApiSpecification:           senzingchatservice.OpenApiSpecificationJson,
 		ReadHeaderTimeout:              60 * time.Second,
 		SenzingEngineConfigurationJson: senzingEngineConfigurationJson,
 		SenzingModuleName:              viper.GetString(option.EngineModuleName),

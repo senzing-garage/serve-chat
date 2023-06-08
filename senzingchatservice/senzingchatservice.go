@@ -2,7 +2,6 @@ package senzingchatservice
 
 import (
 	"context"
-	_ "embed"
 	"fmt"
 	"sync"
 

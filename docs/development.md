@@ -31,19 +31,6 @@ Since the Senzing library is a prerequisite, it must be installed first.
 1. Using the environment variables values just set, follow steps in
    [clone-repository](https://github.com/Senzing/knowledge-base/blob/main/HOWTO/clone-repository.md) to install the Git repository.
 
-## Make a test database
-
-1. Install
-   [senzing-tools](https://github.com/Senzing/senzing-tools#install).
-1. Create database.
-   **Note:** The database location in the following example matches what's in the `Makefile`.
-   Example:
-
-    ```console
-    export LD_LIBRARY_PATH=/opt/senzing/g2/lib/
-    senzing-tools init-database --database-url sqlite3://na:na@/tmp/sqlite/G2C.db
-    ```
-
 ## Development cycle
 
 1. Get latest version of [ogen](https://github.com/ogen-go/ogen) code generator.
@@ -51,6 +38,7 @@ Since the Senzing library is a prerequisite, it must be installed first.
    Example:
 
     ```console
+    cd ${GIT_REPOSITORY_DIR}
     go get -d github.com/ogen-go/ogen
     ```
 
@@ -69,6 +57,15 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
 1. Modify
    [senzingchatservice.go](../senzingchatservice/senzingchatservice.go).
+1. Create clean SQLite test database.
+   Example:
+
+    ```console
+   cd ${GIT_REPOSITORY_DIR}
+   make clean
+
+    ```
+
 1. Test.
 
     ```console
