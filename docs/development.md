@@ -51,6 +51,7 @@ Since the Senzing library is a prerequisite, it must be installed first.
    Example:
 
     ```console
+    cd ${GIT_REPOSITORY_DIR}
     go get -d github.com/ogen-go/ogen
     ```
 
