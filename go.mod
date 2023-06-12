@@ -6,7 +6,7 @@ require (
 	github.com/flowchartsman/swaggerui v0.0.0-20221017034628-909ed4f3701b
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v1.0.0
-	github.com/ogen-go/ogen v0.68.5
+	github.com/ogen-go/ogen v0.69.1
 	github.com/senzing/g2-sdk-go v0.6.5-0.20230605212343-7516a3ae79ba
 	github.com/senzing/go-common v0.1.3
 	github.com/senzing/go-grpcing v0.1.0
