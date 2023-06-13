@@ -159,7 +159,7 @@ func PreRun(cobraCommand *cobra.Command, args []string) {
 // Used in construction of cobra.Command
 func RunE(_ *cobra.Command, _ []string) error {
 	var err error = nil
-	ctx := context.TODO()
+	ctx := context.Background()
 
 	// Build senzingEngineConfigurationJson.
 
