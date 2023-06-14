@@ -6,15 +6,14 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/senzing/go-common/g2engineconfigurationjson"
 	"github.com/senzing/go-grpcing/grpcurl"
 	"github.com/senzing/go-observing/observer"
-	"github.com/senzing/senzing-tools/constant"
+	"github.com/senzing/senzing-tools/cmdhelper"
 	"github.com/senzing/senzing-tools/envar"
-	"github.com/senzing/senzing-tools/helper"
+	"github.com/senzing/senzing-tools/help"
 	"github.com/senzing/senzing-tools/option"
 	"github.com/senzing/serve-chat/httpserver"
 	"github.com/senzing/serve-chat/senzingchatservice"
@@ -24,35 +23,111 @@ import (
 )
 
 const (
-	defaultConfiguration           string = ""
-	defaultDatabaseUrl             string = ""
-	defaultEnableAll               bool   = false
-	defaultEnableSenzingChatApi    bool   = false
-	defaultEnableSwaggerUI         bool   = false
-	defaultEngineConfigurationJson string = ""
-	defaultEngineLogLevel          int    = 0
-	defaultGrpcUrl                        = ""
-	defaultHttpPort                int    = 8262
-	defaultLogLevel                string = "INFO"
-	defaultObserverOrigin          string = "serve-chat"
-	defaultObserverUrl             string = ""
-	defaultServerAddress           string = "0.0.0.0"
-	envarEnableAll                 string = "SENZING_TOOLS_ENABLE_ALL"
-	envarEnableSenzingChatApi      string = "SENZING_TOOLS_ENABLE_SENZING_CHAT_API"
-	envarServerAddress             string = "SENZING_TOOLS_SERVER_ADDRESS"
-	optionEnableAll                string = "enable-all"
-	optionEnableSenzingChatApi     string = "enable-senzing-chat-api"
-	optionServerAddress            string = "server-address"
-	Short                          string = "serve-chat short description"
-	Use                            string = "serve-chat"
-	Long                           string = `
+	Short string = "serve-chat short description"
+	Use   string = "serve-chat"
+	Long  string = `
  serve-chat long description.
 	 `
 )
 
-var (
-	defaultEngineModuleName string = fmt.Sprintf("serve-chat-%d", time.Now().Unix())
-)
+var ContextBools = []cmdhelper.ContextBool{
+	{
+		Default: cmdhelper.OsLookupEnvBool(envar.EnableAll, false),
+		Envar:   envar.EnableAll,
+		Help:    help.EnableAll,
+		Option:  option.EnableAll,
+	},
+	{
+		Default: cmdhelper.OsLookupEnvBool(envar.EnableSenzingChatApi, false),
+		Envar:   envar.EnableSenzingChatApi,
+		Help:    help.EnableSenzingChatApi,
+		Option:  option.EnableSenzingChatApi,
+	},
+	{
+		Default: cmdhelper.OsLookupEnvBool(envar.EnableSwaggerUi, false),
+		Envar:   envar.EnableSwaggerUi,
+		Help:    help.EnableSwaggerUi,
+		Option:  option.EnableSwaggerUi,
+	},
+}
+
+var ContextInts = []cmdhelper.ContextInt{
+	{
+		Default: cmdhelper.OsLookupEnvInt(envar.EngineLogLevel, 0),
+		Envar:   envar.EngineLogLevel,
+		Help:    help.EngineLogLevel,
+		Option:  option.EngineLogLevel,
+	},
+	{
+		Default: cmdhelper.OsLookupEnvInt(envar.HttpPort, 8262),
+		Envar:   envar.HttpPort,
+		Help:    help.HttpPort,
+		Option:  option.HttpPort,
+	},
+}
+
+var ContextStrings = []cmdhelper.ContextString{
+	{
+		Default: cmdhelper.OsLookupEnvString(envar.Configuration, ""),
+		Envar:   envar.Configuration,
+		Help:    help.Configuration,
+		Option:  option.Configuration,
+	},
+	{
+		Default: cmdhelper.OsLookupEnvString(envar.DatabaseUrl, ""),
+		Envar:   envar.DatabaseUrl,
+		Help:    help.DatabaseUrl,
+		Option:  option.DatabaseUrl,
+	},
+	{
+		Default: cmdhelper.OsLookupEnvString(envar.EngineConfigurationJson, ""),
+		Envar:   envar.EngineConfigurationJson,
+		Help:    help.EngineConfigurationJson,
+		Option:  option.EngineConfigurationJson,
+	},
+	{
+		Default: fmt.Sprintf("serve-chat-%d", time.Now().Unix()),
+		Envar:   envar.EngineModuleName,
+		Help:    help.EngineModuleName,
+		Option:  option.EngineModuleName,
+	},
+	{
+		Default: cmdhelper.OsLookupEnvString(envar.GrpcUrl, ""),
+		Envar:   envar.GrpcUrl,
+		Help:    help.GrpcUrl,
+		Option:  option.GrpcUrl,
+	},
+	{
+		Default: cmdhelper.OsLookupEnvString(envar.LogLevel, "INFO"),
+		Envar:   envar.LogLevel,
+		Help:    help.LogLevel,
+		Option:  option.LogLevel,
+	},
+	{
+		Default: cmdhelper.OsLookupEnvString(envar.ObserverOrigin, "serve-chat"),
+		Envar:   envar.ObserverOrigin,
+		Help:    help.ObserverOrigin,
+		Option:  option.ObserverOrigin,
+	},
+	{
+		Default: cmdhelper.OsLookupEnvString(envar.ObserverUrl, ""),
+		Envar:   envar.ObserverUrl,
+		Help:    help.ObserverUrl,
+		Option:  option.ObserverUrl,
+	},
+	{
+		Default: cmdhelper.OsLookupEnvString(envar.ServerAddress, "0.0.0.0"),
+		Envar:   envar.ServerAddress,
+		Help:    help.ServerAddress,
+		Option:  option.ServerAddress,
+	},
+}
+
+var ContextVariables = &cmdhelper.ContextVariables{
+	Bools:   ContextBools,
+	Ints:    ContextInts,
+	Strings: ContextStrings,
+}
 
 // ----------------------------------------------------------------------------
 // Private functions
@@ -60,126 +135,7 @@ var (
 
 // Since init() is always invoked, define command line parameters.
 func init() {
-	RootCmd.Flags().Bool(option.EnableSwaggerUi, defaultEnableSwaggerUI, fmt.Sprintf("Enable the Swagger UI service [%s]", envar.EnableSwaggerUi))
-	RootCmd.Flags().Bool(optionEnableAll, defaultEnableSwaggerUI, fmt.Sprintf("Enable all services [%s]", envarEnableAll))
-	RootCmd.Flags().Bool(optionEnableSenzingChatApi, defaultEnableSwaggerUI, fmt.Sprintf("Enable the Senzing Chat API service [%s]", envarEnableSenzingChatApi))
-	RootCmd.Flags().Int(option.EngineLogLevel, defaultEngineLogLevel, fmt.Sprintf("Log level for Senzing Engine [%s]", envar.EngineLogLevel))
-	RootCmd.Flags().Int(option.HttpPort, defaultHttpPort, fmt.Sprintf("Port to serve HTTP [%s]", envar.HttpPort))
-	RootCmd.Flags().String(option.Configuration, defaultConfiguration, fmt.Sprintf("Path to configuration file [%s]", envar.Configuration))
-	RootCmd.Flags().String(option.DatabaseUrl, defaultDatabaseUrl, fmt.Sprintf("URL of database to initialize [%s]", envar.DatabaseUrl))
-	RootCmd.Flags().String(option.EngineConfigurationJson, defaultEngineConfigurationJson, fmt.Sprintf("JSON string sent to Senzing's init() function [%s]", envar.EngineConfigurationJson))
-	RootCmd.Flags().String(option.EngineModuleName, defaultEngineModuleName, fmt.Sprintf("Identifier given to the Senzing engine [%s]", envar.EngineModuleName))
-	RootCmd.Flags().String(option.GrpcUrl, defaultGrpcUrl, fmt.Sprintf("URL of Senzing gRPC service [%s]", envar.GrpcUrl))
-	RootCmd.Flags().String(option.LogLevel, defaultLogLevel, fmt.Sprintf("Log level [%s]", envar.LogLevel))
-	RootCmd.Flags().String(option.ObserverOrigin, defaultObserverOrigin, fmt.Sprintf("Identify this instance to the Observer [%s]", envar.ObserverOrigin))
-	RootCmd.Flags().String(option.ObserverUrl, defaultObserverUrl, fmt.Sprintf("URL of Observer [%s]", envar.ObserverUrl))
-	RootCmd.Flags().String(optionServerAddress, defaultServerAddress, fmt.Sprintf("IP interface server listens on [%s]", envarServerAddress))
-}
-
-// If a configuration file is present, load it.
-func loadConfigurationFile(cobraCommand *cobra.Command) {
-	configuration := ""
-	configFlag := cobraCommand.Flags().Lookup(option.Configuration)
-	if configFlag != nil {
-		configuration = configFlag.Value.String()
-	}
-	if configuration != "" { // Use configuration file specified as a command line option.
-		viper.SetConfigFile(configuration)
-	} else { // Search for a configuration file.
-
-		// Determine home directory.
-
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
-		// Specify configuration file name.
-
-		viper.SetConfigName("serve-chat")
-		viper.SetConfigType("yaml")
-
-		// Define search path order.
-
-		viper.AddConfigPath(home + "/.serve-chat")
-		viper.AddConfigPath(home)
-		viper.AddConfigPath("/etc/serve-chat")
-	}
-
-	// If a config file is found, read it in.
-
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Applying configuration file:", viper.ConfigFileUsed())
-	}
-}
-
-// Configure Viper with user-specified options.
-func loadOptions(cobraCommand *cobra.Command) {
-	var err error = nil
-	viper.AutomaticEnv()
-	replacer := strings.NewReplacer("-", "_")
-	viper.SetEnvKeyReplacer(replacer)
-	viper.SetEnvPrefix(constant.SetEnvPrefix)
-
-	// Bools
-
-	boolOptions := map[string]bool{
-		option.EnableSwaggerUi:     defaultEnableSwaggerUI,
-		optionEnableAll:            defaultEnableAll,
-		optionEnableSenzingChatApi: defaultEnableSenzingChatApi,
-	}
-	for optionKey, optionValue := range boolOptions {
-		viper.SetDefault(optionKey, optionValue)
-		err = viper.BindPFlag(optionKey, cobraCommand.Flags().Lookup(optionKey))
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	// Ints
-
-	intOptions := map[string]int{
-		option.EngineLogLevel: defaultEngineLogLevel,
-		option.HttpPort:       defaultHttpPort,
-	}
-	for optionKey, optionValue := range intOptions {
-		viper.SetDefault(optionKey, optionValue)
-		err = viper.BindPFlag(optionKey, cobraCommand.Flags().Lookup(optionKey))
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	// Strings
-
-	stringOptions := map[string]string{
-		option.Configuration:           defaultConfiguration,
-		option.DatabaseUrl:             defaultDatabaseUrl,
-		option.EngineConfigurationJson: defaultEngineConfigurationJson,
-		option.EngineModuleName:        defaultEngineModuleName,
-		option.GrpcUrl:                 defaultGrpcUrl,
-		option.LogLevel:                defaultLogLevel,
-		option.ObserverOrigin:          defaultObserverOrigin,
-		option.ObserverUrl:             defaultObserverUrl,
-		optionServerAddress:            defaultServerAddress,
-	}
-	for optionKey, optionValue := range stringOptions {
-		viper.SetDefault(optionKey, optionValue)
-		err = viper.BindPFlag(optionKey, cobraCommand.Flags().Lookup(optionKey))
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	// StringSlice
-
-	stringSliceOptions := map[string][]string{}
-	for optionKey, optionValue := range stringSliceOptions {
-		viper.SetDefault(optionKey, optionValue)
-		err = viper.BindPFlag(optionKey, cobraCommand.Flags().Lookup(optionKey))
-		if err != nil {
-			panic(err)
-		}
-	}
-
+	cmdhelper.Init(RootCmd, *ContextVariables)
 }
 
 // ----------------------------------------------------------------------------
@@ -197,15 +153,13 @@ func Execute() {
 
 // Used in construction of cobra.Command
 func PreRun(cobraCommand *cobra.Command, args []string) {
-	loadConfigurationFile(cobraCommand)
-	loadOptions(cobraCommand)
-	cobraCommand.SetVersionTemplate(constant.VersionTemplate)
+	cmdhelper.PreRun(cobraCommand, args, Use, *ContextVariables)
 }
 
 // Used in construction of cobra.Command
 func RunE(_ *cobra.Command, _ []string) error {
 	var err error = nil
-	ctx := context.TODO()
+	ctx := context.Background()
 
 	// Build senzingEngineConfigurationJson.
 
@@ -238,8 +192,8 @@ func RunE(_ *cobra.Command, _ []string) error {
 
 	httpServer := &httpserver.HttpServerImpl{
 		ChatUrlRoutePrefix:             "chat",
-		EnableAll:                      viper.GetBool(optionEnableAll),
-		EnableSenzingChatAPI:           viper.GetBool(optionEnableSenzingChatApi),
+		EnableAll:                      viper.GetBool(option.EnableAll),
+		EnableSenzingChatAPI:           viper.GetBool(option.EnableSenzingChatApi),
 		EnableSwaggerUI:                viper.GetBool(option.EnableSwaggerUi),
 		GrpcDialOptions:                grpcDialOptions,
 		GrpcTarget:                     grpcTarget,
@@ -251,7 +205,7 @@ func RunE(_ *cobra.Command, _ []string) error {
 		SenzingEngineConfigurationJson: senzingEngineConfigurationJson,
 		SenzingModuleName:              viper.GetString(option.EngineModuleName),
 		SenzingVerboseLogging:          viper.GetInt(option.EngineLogLevel),
-		ServerAddress:                  viper.GetString(optionServerAddress),
+		ServerAddress:                  viper.GetString(option.ServerAddress),
 		ServerPort:                     viper.GetInt(option.HttpPort),
 		SwaggerUrlRoutePrefix:          "swagger",
 	}
@@ -261,7 +215,7 @@ func RunE(_ *cobra.Command, _ []string) error {
 
 // Used in construction of cobra.Command
 func Version() string {
-	return helper.MakeVersion(githubVersion, githubIteration)
+	return cmdhelper.Version(githubVersion, githubIteration)
 }
 
 // ----------------------------------------------------------------------------
