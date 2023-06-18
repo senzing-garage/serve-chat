@@ -145,7 +145,7 @@ func (chatApiService *ChatApiServiceImpl) AddPet(ctx context.Context, req *api.P
 	if err != nil {
 		return r, err
 	}
-	parsedResponse, err := senzing.ParseProductVersionResponse(ctx, response)
+	parsedResponse, err := senzing.UnmarshalProductVersionResponse(ctx, response)
 	if err != nil {
 		return r, err
 	}
