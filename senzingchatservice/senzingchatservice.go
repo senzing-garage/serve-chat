@@ -2,11 +2,9 @@ package senzingchatservice
 
 import (
 	"context"
-	"fmt"
 	"sync"
 
 	"github.com/senzing/g2-sdk-go/g2api"
-	"github.com/senzing/g2-sdk-go/senzing"
 	"github.com/senzing/go-logging/logging"
 	"github.com/senzing/go-observing/observer"
 	"github.com/senzing/go-sdk-abstract-factory/factory"
@@ -140,50 +138,50 @@ func (chatApiService *ChatApiServiceImpl) getG2product(ctx context.Context) g2ap
 // Add a new pet to the store.
 //
 // POST /pet
-func (chatApiService *ChatApiServiceImpl) AddPet(ctx context.Context, req *api.Pet) (r *api.Pet, _ error) {
-	response, err := chatApiService.getG2product(ctx).Version(ctx)
-	if err != nil {
-		return r, err
-	}
-	parsedResponse, err := senzing.UnmarshalProductVersionResponse(ctx, response)
-	if err != nil {
-		return r, err
-	}
-	r = &api.Pet{
-		ID:     api.NewOptInt64(1001),
-		Name:   parsedResponse.BuildVersion,
-		Status: api.NewOptPetStatus(api.PetStatusAvailable),
-	}
+// func (chatApiService *ChatApiServiceImpl) AddPet(ctx context.Context, req *api.Pet) (r *api.Pet, _ error) {
+// 	response, err := chatApiService.getG2product(ctx).Version(ctx)
+// 	if err != nil {
+// 		return r, err
+// 	}
+// 	parsedResponse, err := senzing.UnmarshalProductVersionResponse(ctx, response)
+// 	if err != nil {
+// 		return r, err
+// 	}
+// 	r = &api.Pet{
+// 		ID:     api.NewOptInt64(1001),
+// 		Name:   parsedResponse.BuildVersion,
+// 		Status: api.NewOptPetStatus(api.PetStatusAvailable),
+// 	}
 
-	// Example logging.
+// 	// Example logging.
 
-	chatApiService.log(1, r, err)
+// 	chatApiService.log(1, r, err)
 
-	// Example error generation.
+// 	// Example error generation.
 
-	newErr := chatApiService.error(2, "example error")
-	if false {
-		fmt.Printf(">>> An example error: %+v\n", newErr)
-	}
-	return r, err
-}
+// 	newErr := chatApiService.error(2, "example error")
+// 	if false {
+// 		fmt.Printf(">>> An example error: %+v\n", newErr)
+// 	}
+// 	return r, err
+// }
 
 // GetPetById implements getPetById operation.
 //
 // Returns a single pet.
 //
 // GET /pet/{petId}
-func (chatApiService *ChatApiServiceImpl) GetPetById(ctx context.Context, params api.GetPetByIdParams) (r api.GetPetByIdRes, _ error) {
-	var err error = nil
-	response, err := chatApiService.getG2engine(ctx).GetEntityByEntityID(ctx, params.PetId)
-	if err != nil {
-		return r, err
-	}
+// func (chatApiService *ChatApiServiceImpl) GetPetById(ctx context.Context, params api.GetPetByIdParams) (r api.GetPetByIdRes, _ error) {
+// 	var err error = nil
+// 	response, err := chatApiService.getG2engine(ctx).GetEntityByEntityID(ctx, params.PetId)
+// 	if err != nil {
+// 		return r, err
+// 	}
 
-	r = &api.Pet{
-		ID:     api.NewOptInt64(params.PetId),
-		Name:   response,
-		Status: api.NewOptPetStatus(api.PetStatusAvailable),
-	}
-	return r, err
-}
+// 	r = &api.Pet{
+// 		ID:     api.NewOptInt64(params.PetId),
+// 		Name:   response,
+// 		Status: api.NewOptPetStatus(api.PetStatusAvailable),
+// 	}
+// 	return r, err
+// }

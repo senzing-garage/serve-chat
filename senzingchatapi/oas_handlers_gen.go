@@ -18,20 +18,20 @@ import (
 	"github.com/ogen-go/ogen/otelogen"
 )
 
-// handleAddPetRequest handles addPet operation.
+// handleEntityDetailsEntityDetailsGetRequest handles entity_details_entity_details_get operation.
 //
-// Add a new pet to the store.
+// Retrieve entity data based on the ID of a resolved identity.
 //
-// POST /pet
-func (s *Server) handleAddPetRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+// GET /entity_details
+func (s *Server) handleEntityDetailsEntityDetailsGetRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("addPet"),
-		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/pet"),
+		otelogen.OperationID("entity_details_entity_details_get"),
+		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/entity_details"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "AddPet",
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "EntityDetailsEntityDetailsGet",
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -41,7 +41,8 @@ func (s *Server) handleAddPetRequest(args [0]string, argsEscaped bool, w http.Re
 	startTime := time.Now()
 	defer func() {
 		elapsedDuration := time.Since(startTime)
-		s.duration.Record(ctx, elapsedDuration.Microseconds(), metric.WithAttributes(otelAttrs...))
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
 	}()
 
 	// Increment request counter.
@@ -55,11 +56,320 @@ func (s *Server) handleAddPetRequest(args [0]string, argsEscaped bool, w http.Re
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: "AddPet",
-			ID:   "addPet",
+			Name: "EntityDetailsEntityDetailsGet",
+			ID:   "entity_details_entity_details_get",
 		}
 	)
-	request, close, err := s.decodeAddPetRequest(r)
+	params, err := decodeEntityDetailsEntityDetailsGetParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var response EntityDetailsEntityDetailsGetRes
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:       ctx,
+			OperationName: "EntityDetailsEntityDetailsGet",
+			OperationID:   "entity_details_entity_details_get",
+			Body:          nil,
+			Params: middleware.Parameters{
+				{
+					Name: "entity_id",
+					In:   "query",
+				}: params.EntityID,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = EntityDetailsEntityDetailsGetParams
+			Response = EntityDetailsEntityDetailsGetRes
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackEntityDetailsEntityDetailsGetParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.EntityDetailsEntityDetailsGet(ctx, params)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.EntityDetailsEntityDetailsGet(ctx, params)
+	}
+	if err != nil {
+		recordError("Internal", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	if err := encodeEntityDetailsEntityDetailsGetResponse(response, w, span); err != nil {
+		recordError("EncodeResponse", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+}
+
+// handleEntityHowEntityHowGetRequest handles entity_how_entity_how_get operation.
+//
+// Determines and details steps-by-step how records resolved to an ENTITY_ID.
+//
+// GET /entity_how
+func (s *Server) handleEntityHowEntityHowGetRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("entity_how_entity_how_get"),
+		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/entity_how"),
+	}
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "EntityHowEntityHowGet",
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	s.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			s.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: "EntityHowEntityHowGet",
+			ID:   "entity_how_entity_how_get",
+		}
+	)
+	params, err := decodeEntityHowEntityHowGetParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var response EntityHowEntityHowGetRes
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:       ctx,
+			OperationName: "EntityHowEntityHowGet",
+			OperationID:   "entity_how_entity_how_get",
+			Body:          nil,
+			Params: middleware.Parameters{
+				{
+					Name: "entity_id",
+					In:   "query",
+				}: params.EntityID,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = EntityHowEntityHowGetParams
+			Response = EntityHowEntityHowGetRes
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackEntityHowEntityHowGetParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.EntityHowEntityHowGet(ctx, params)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.EntityHowEntityHowGet(ctx, params)
+	}
+	if err != nil {
+		recordError("Internal", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	if err := encodeEntityHowEntityHowGetResponse(response, w, span); err != nil {
+		recordError("EncodeResponse", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+}
+
+// handleEntityReportEntityReportGetRequest handles entity_report_entity_report_get operation.
+//
+// Return 10 entities with either matches, possible matches, or relationships.
+//
+// GET /entity_report
+func (s *Server) handleEntityReportEntityReportGetRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("entity_report_entity_report_get"),
+		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/entity_report"),
+	}
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "EntityReportEntityReportGet",
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	s.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			s.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: "EntityReportEntityReportGet",
+			ID:   "entity_report_entity_report_get",
+		}
+	)
+	params, err := decodeEntityReportEntityReportGetParams(args, argsEscaped, r)
+	if err != nil {
+		err = &ogenerrors.DecodeParamsError{
+			OperationContext: opErrContext,
+			Err:              err,
+		}
+		recordError("DecodeParams", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	var response EntityReportEntityReportGetRes
+	if m := s.cfg.Middleware; m != nil {
+		mreq := middleware.Request{
+			Context:       ctx,
+			OperationName: "EntityReportEntityReportGet",
+			OperationID:   "entity_report_entity_report_get",
+			Body:          nil,
+			Params: middleware.Parameters{
+				{
+					Name: "export_flags",
+					In:   "query",
+				}: params.ExportFlags,
+			},
+			Raw: r,
+		}
+
+		type (
+			Request  = struct{}
+			Params   = EntityReportEntityReportGetParams
+			Response = EntityReportEntityReportGetRes
+		)
+		response, err = middleware.HookMiddleware[
+			Request,
+			Params,
+			Response,
+		](
+			m,
+			mreq,
+			unpackEntityReportEntityReportGetParams,
+			func(ctx context.Context, request Request, params Params) (response Response, err error) {
+				response, err = s.h.EntityReportEntityReportGet(ctx, params)
+				return response, err
+			},
+		)
+	} else {
+		response, err = s.h.EntityReportEntityReportGet(ctx, params)
+	}
+	if err != nil {
+		recordError("Internal", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+
+	if err := encodeEntityReportEntityReportGetResponse(response, w, span); err != nil {
+		recordError("EncodeResponse", err)
+		s.cfg.ErrorHandler(ctx, w, r, err)
+		return
+	}
+}
+
+// handleEntitySearchEntitySearchPostRequest handles entity_search_entity_search_post operation.
+//
+// Retrieves entity data based on a user-specified set of entity attributes.
+//
+// POST /entity_search
+func (s *Server) handleEntitySearchEntitySearchPostRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("entity_search_entity_search_post"),
+		semconv.HTTPMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/entity_search"),
+	}
+
+	// Start a span for this request.
+	ctx, span := s.cfg.Tracer.Start(r.Context(), "EntitySearchEntitySearchPost",
+		trace.WithAttributes(otelAttrs...),
+		serverSpanKind,
+	)
+	defer span.End()
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		elapsedDuration := time.Since(startTime)
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		s.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	s.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	var (
+		recordError = func(stage string, err error) {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			s.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		err          error
+		opErrContext = ogenerrors.OperationContext{
+			Name: "EntitySearchEntitySearchPost",
+			ID:   "entity_search_entity_search_post",
+		}
+	)
+	request, close, err := s.decodeEntitySearchEntitySearchPostRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -75,21 +385,21 @@ func (s *Server) handleAddPetRequest(args [0]string, argsEscaped bool, w http.Re
 		}
 	}()
 
-	var response *Pet
+	var response EntitySearchEntitySearchPostRes
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:       ctx,
-			OperationName: "AddPet",
-			OperationID:   "addPet",
+			OperationName: "EntitySearchEntitySearchPost",
+			OperationID:   "entity_search_entity_search_post",
 			Body:          request,
 			Params:        middleware.Parameters{},
 			Raw:           r,
 		}
 
 		type (
-			Request  = *Pet
+			Request  = *SearchAttributes
 			Params   = struct{}
-			Response = *Pet
+			Response = EntitySearchEntitySearchPostRes
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -100,12 +410,12 @@ func (s *Server) handleAddPetRequest(args [0]string, argsEscaped bool, w http.Re
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.AddPet(ctx, request)
+				response, err = s.h.EntitySearchEntitySearchPost(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.AddPet(ctx, request)
+		response, err = s.h.EntitySearchEntitySearchPost(ctx, request)
 	}
 	if err != nil {
 		recordError("Internal", err)
@@ -113,321 +423,7 @@ func (s *Server) handleAddPetRequest(args [0]string, argsEscaped bool, w http.Re
 		return
 	}
 
-	if err := encodeAddPetResponse(response, w, span); err != nil {
-		recordError("EncodeResponse", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-}
-
-// handleDeletePetRequest handles deletePet operation.
-//
-// Deletes a pet.
-//
-// DELETE /pet/{petId}
-func (s *Server) handleDeletePetRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("deletePet"),
-		semconv.HTTPMethodKey.String("DELETE"),
-		semconv.HTTPRouteKey.String("/pet/{petId}"),
-	}
-
-	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "DeletePet",
-		trace.WithAttributes(otelAttrs...),
-		serverSpanKind,
-	)
-	defer span.End()
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		elapsedDuration := time.Since(startTime)
-		s.duration.Record(ctx, elapsedDuration.Microseconds(), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	s.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	var (
-		recordError = func(stage string, err error) {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			s.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		err          error
-		opErrContext = ogenerrors.OperationContext{
-			Name: "DeletePet",
-			ID:   "deletePet",
-		}
-	)
-	params, err := decodeDeletePetParams(args, argsEscaped, r)
-	if err != nil {
-		err = &ogenerrors.DecodeParamsError{
-			OperationContext: opErrContext,
-			Err:              err,
-		}
-		recordError("DecodeParams", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-
-	var response *DeletePetOK
-	if m := s.cfg.Middleware; m != nil {
-		mreq := middleware.Request{
-			Context:       ctx,
-			OperationName: "DeletePet",
-			OperationID:   "deletePet",
-			Body:          nil,
-			Params: middleware.Parameters{
-				{
-					Name: "petId",
-					In:   "path",
-				}: params.PetId,
-			},
-			Raw: r,
-		}
-
-		type (
-			Request  = struct{}
-			Params   = DeletePetParams
-			Response = *DeletePetOK
-		)
-		response, err = middleware.HookMiddleware[
-			Request,
-			Params,
-			Response,
-		](
-			m,
-			mreq,
-			unpackDeletePetParams,
-			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.DeletePet(ctx, params)
-				return response, err
-			},
-		)
-	} else {
-		err = s.h.DeletePet(ctx, params)
-	}
-	if err != nil {
-		recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-
-	if err := encodeDeletePetResponse(response, w, span); err != nil {
-		recordError("EncodeResponse", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-}
-
-// handleGetPetByIdRequest handles getPetById operation.
-//
-// Returns a single pet.
-//
-// GET /pet/{petId}
-func (s *Server) handleGetPetByIdRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("getPetById"),
-		semconv.HTTPMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/pet/{petId}"),
-	}
-
-	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "GetPetById",
-		trace.WithAttributes(otelAttrs...),
-		serverSpanKind,
-	)
-	defer span.End()
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		elapsedDuration := time.Since(startTime)
-		s.duration.Record(ctx, elapsedDuration.Microseconds(), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	s.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	var (
-		recordError = func(stage string, err error) {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			s.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		err          error
-		opErrContext = ogenerrors.OperationContext{
-			Name: "GetPetById",
-			ID:   "getPetById",
-		}
-	)
-	params, err := decodeGetPetByIdParams(args, argsEscaped, r)
-	if err != nil {
-		err = &ogenerrors.DecodeParamsError{
-			OperationContext: opErrContext,
-			Err:              err,
-		}
-		recordError("DecodeParams", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-
-	var response GetPetByIdRes
-	if m := s.cfg.Middleware; m != nil {
-		mreq := middleware.Request{
-			Context:       ctx,
-			OperationName: "GetPetById",
-			OperationID:   "getPetById",
-			Body:          nil,
-			Params: middleware.Parameters{
-				{
-					Name: "petId",
-					In:   "path",
-				}: params.PetId,
-			},
-			Raw: r,
-		}
-
-		type (
-			Request  = struct{}
-			Params   = GetPetByIdParams
-			Response = GetPetByIdRes
-		)
-		response, err = middleware.HookMiddleware[
-			Request,
-			Params,
-			Response,
-		](
-			m,
-			mreq,
-			unpackGetPetByIdParams,
-			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.GetPetById(ctx, params)
-				return response, err
-			},
-		)
-	} else {
-		response, err = s.h.GetPetById(ctx, params)
-	}
-	if err != nil {
-		recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-
-	if err := encodeGetPetByIdResponse(response, w, span); err != nil {
-		recordError("EncodeResponse", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-}
-
-// handleUpdatePetRequest handles updatePet operation.
-//
-// Updates a pet in the store.
-//
-// POST /pet/{petId}
-func (s *Server) handleUpdatePetRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("updatePet"),
-		semconv.HTTPMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/pet/{petId}"),
-	}
-
-	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), "UpdatePet",
-		trace.WithAttributes(otelAttrs...),
-		serverSpanKind,
-	)
-	defer span.End()
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		elapsedDuration := time.Since(startTime)
-		s.duration.Record(ctx, elapsedDuration.Microseconds(), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	s.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	var (
-		recordError = func(stage string, err error) {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			s.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		err          error
-		opErrContext = ogenerrors.OperationContext{
-			Name: "UpdatePet",
-			ID:   "updatePet",
-		}
-	)
-	params, err := decodeUpdatePetParams(args, argsEscaped, r)
-	if err != nil {
-		err = &ogenerrors.DecodeParamsError{
-			OperationContext: opErrContext,
-			Err:              err,
-		}
-		recordError("DecodeParams", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-
-	var response *UpdatePetOK
-	if m := s.cfg.Middleware; m != nil {
-		mreq := middleware.Request{
-			Context:       ctx,
-			OperationName: "UpdatePet",
-			OperationID:   "updatePet",
-			Body:          nil,
-			Params: middleware.Parameters{
-				{
-					Name: "petId",
-					In:   "path",
-				}: params.PetId,
-				{
-					Name: "name",
-					In:   "query",
-				}: params.Name,
-				{
-					Name: "status",
-					In:   "query",
-				}: params.Status,
-			},
-			Raw: r,
-		}
-
-		type (
-			Request  = struct{}
-			Params   = UpdatePetParams
-			Response = *UpdatePetOK
-		)
-		response, err = middleware.HookMiddleware[
-			Request,
-			Params,
-			Response,
-		](
-			m,
-			mreq,
-			unpackUpdatePetParams,
-			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				err = s.h.UpdatePet(ctx, params)
-				return response, err
-			},
-		)
-	} else {
-		err = s.h.UpdatePet(ctx, params)
-	}
-	if err != nil {
-		recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
-		return
-	}
-
-	if err := encodeUpdatePetResponse(response, w, span); err != nil {
+	if err := encodeEntitySearchEntitySearchPostResponse(response, w, span); err != nil {
 		recordError("EncodeResponse", err)
 		s.cfg.ErrorHandler(ctx, w, r, err)
 		return

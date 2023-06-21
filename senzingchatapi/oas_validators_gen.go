@@ -3,28 +3,57 @@
 package senzingchatapi
 
 import (
+	"fmt"
+
 	"github.com/go-faster/errors"
+	"github.com/go-faster/jx"
 
 	"github.com/ogen-go/ogen/validate"
 )
 
-func (s *Pet) Validate() error {
+func (s EntityReportEntityReportGetOKApplicationJSON) Validate() error {
+	alias := ([]jx.Raw)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+func (s ExportFlags) Validate() error {
+	switch s {
+	case "MATCHED":
+		return nil
+	case "POSSIBLE_MATCHES":
+		return nil
+	case "POSSIBLE_RELATIONSHIPS":
+		return nil
+	default:
+		return errors.Errorf("invalid value: %v", s)
+	}
+}
+func (s *HTTPValidationError) Validate() error {
 	var failures []validate.FieldError
 	if err := func() error {
-		if s.Status.Set {
+		var failures []validate.FieldError
+		for i, elem := range s.Detail {
 			if err := func() error {
-				if err := s.Status.Value.Validate(); err != nil {
+				if err := elem.Validate(); err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return err
+				failures = append(failures, validate.FieldError{
+					Name:  fmt.Sprintf("[%d]", i),
+					Error: err,
+				})
 			}
+		}
+		if len(failures) > 0 {
+			return &validate.Error{Fields: failures}
 		}
 		return nil
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
-			Name:  "status",
+			Name:  "detail",
 			Error: err,
 		})
 	}
@@ -33,15 +62,21 @@ func (s *Pet) Validate() error {
 	}
 	return nil
 }
-func (s PetStatus) Validate() error {
-	switch s {
-	case "available":
+func (s *ValidationError) Validate() error {
+	var failures []validate.FieldError
+	if err := func() error {
+		if s.Loc == nil {
+			return errors.New("nil is invalid value")
+		}
 		return nil
-	case "pending":
-		return nil
-	case "sold":
-		return nil
-	default:
-		return errors.Errorf("invalid value: %v", s)
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "loc",
+			Error: err,
+		})
 	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
 }

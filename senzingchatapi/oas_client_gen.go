@@ -68,43 +68,35 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 	return u
 }
 
-// AddPet invokes addPet operation.
+// EntityDetailsEntityDetailsGet invokes entity_details_entity_details_get operation.
 //
-// Add a new pet to the store.
+// Retrieve entity data based on the ID of a resolved identity.
 //
-// POST /pet
-func (c *Client) AddPet(ctx context.Context, request *Pet) (*Pet, error) {
-	res, err := c.sendAddPet(ctx, request)
+// GET /entity_details
+func (c *Client) EntityDetailsEntityDetailsGet(ctx context.Context, params EntityDetailsEntityDetailsGetParams) (EntityDetailsEntityDetailsGetRes, error) {
+	res, err := c.sendEntityDetailsEntityDetailsGet(ctx, params)
 	_ = res
 	return res, err
 }
 
-func (c *Client) sendAddPet(ctx context.Context, request *Pet) (res *Pet, err error) {
+func (c *Client) sendEntityDetailsEntityDetailsGet(ctx context.Context, params EntityDetailsEntityDetailsGetParams) (res EntityDetailsEntityDetailsGetRes, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("addPet"),
-	}
-	// Validate request before sending.
-	if err := func() error {
-		if err := request.Validate(); err != nil {
-			return err
-		}
-		return nil
-	}(); err != nil {
-		return res, errors.Wrap(err, "validate")
+		otelogen.OperationID("entity_details_entity_details_get"),
 	}
 
 	// Run stopwatch.
 	startTime := time.Now()
 	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
 		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, elapsedDuration.Microseconds(), metric.WithAttributes(otelAttrs...))
+		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
 	}()
 
 	// Increment request counter.
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "AddPet",
+	ctx, span := c.cfg.Tracer.Start(ctx, "EntityDetailsEntityDetailsGet",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -122,187 +114,26 @@ func (c *Client) sendAddPet(ctx context.Context, request *Pet) (res *Pet, err er
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/pet"
+	pathParts[0] = "/entity_details"
 	uri.AddPathParts(u, pathParts[:]...)
 
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-	if err := encodeAddPetRequest(request, r); err != nil {
-		return res, errors.Wrap(err, "encode request")
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeAddPetResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// DeletePet invokes deletePet operation.
-//
-// Deletes a pet.
-//
-// DELETE /pet/{petId}
-func (c *Client) DeletePet(ctx context.Context, params DeletePetParams) error {
-	res, err := c.sendDeletePet(ctx, params)
-	_ = res
-	return err
-}
-
-func (c *Client) sendDeletePet(ctx context.Context, params DeletePetParams) (res *DeletePetOK, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("deletePet"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, elapsedDuration.Microseconds(), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "DeletePet",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [2]string
-	pathParts[0] = "/pet/"
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
 	{
-		// Encode "petId" parameter.
-		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "petId",
-			Style:   uri.PathStyleSimple,
-			Explode: false,
-		})
-		if err := func() error {
-			return e.EncodeValue(conv.Int64ToString(params.PetId))
-		}(); err != nil {
-			return res, errors.Wrap(err, "encode path")
+		// Encode "entity_id" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "entity_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
 		}
-		encoded, err := e.Result()
-		if err != nil {
-			return res, errors.Wrap(err, "encode path")
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.IntToString(params.EntityID))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
 		}
-		pathParts[1] = encoded
 	}
-	uri.AddPathParts(u, pathParts[:]...)
-
-	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "DELETE", u)
-	if err != nil {
-		return res, errors.Wrap(err, "create request")
-	}
-
-	stage = "SendRequest"
-	resp, err := c.cfg.Client.Do(r)
-	if err != nil {
-		return res, errors.Wrap(err, "do request")
-	}
-	defer resp.Body.Close()
-
-	stage = "DecodeResponse"
-	result, err := decodeDeletePetResponse(resp)
-	if err != nil {
-		return res, errors.Wrap(err, "decode response")
-	}
-
-	return result, nil
-}
-
-// GetPetById invokes getPetById operation.
-//
-// Returns a single pet.
-//
-// GET /pet/{petId}
-func (c *Client) GetPetById(ctx context.Context, params GetPetByIdParams) (GetPetByIdRes, error) {
-	res, err := c.sendGetPetById(ctx, params)
-	_ = res
-	return res, err
-}
-
-func (c *Client) sendGetPetById(ctx context.Context, params GetPetByIdParams) (res GetPetByIdRes, err error) {
-	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("getPetById"),
-	}
-
-	// Run stopwatch.
-	startTime := time.Now()
-	defer func() {
-		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, elapsedDuration.Microseconds(), metric.WithAttributes(otelAttrs...))
-	}()
-
-	// Increment request counter.
-	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-
-	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "GetPetById",
-		trace.WithAttributes(otelAttrs...),
-		clientSpanKind,
-	)
-	// Track stage for error reporting.
-	var stage string
-	defer func() {
-		if err != nil {
-			span.RecordError(err)
-			span.SetStatus(codes.Error, stage)
-			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
-		}
-		span.End()
-	}()
-
-	stage = "BuildURL"
-	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [2]string
-	pathParts[0] = "/pet/"
-	{
-		// Encode "petId" parameter.
-		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "petId",
-			Style:   uri.PathStyleSimple,
-			Explode: false,
-		})
-		if err := func() error {
-			return e.EncodeValue(conv.Int64ToString(params.PetId))
-		}(); err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		encoded, err := e.Result()
-		if err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		pathParts[1] = encoded
-	}
-	uri.AddPathParts(u, pathParts[:]...)
+	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
 	r, err := ht.NewRequest(ctx, "GET", u)
@@ -318,7 +149,7 @@ func (c *Client) sendGetPetById(ctx context.Context, params GetPetByIdParams) (r
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeGetPetByIdResponse(resp)
+	result, err := decodeEntityDetailsEntityDetailsGetResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -326,34 +157,35 @@ func (c *Client) sendGetPetById(ctx context.Context, params GetPetByIdParams) (r
 	return result, nil
 }
 
-// UpdatePet invokes updatePet operation.
+// EntityHowEntityHowGet invokes entity_how_entity_how_get operation.
 //
-// Updates a pet in the store.
+// Determines and details steps-by-step how records resolved to an ENTITY_ID.
 //
-// POST /pet/{petId}
-func (c *Client) UpdatePet(ctx context.Context, params UpdatePetParams) error {
-	res, err := c.sendUpdatePet(ctx, params)
+// GET /entity_how
+func (c *Client) EntityHowEntityHowGet(ctx context.Context, params EntityHowEntityHowGetParams) (EntityHowEntityHowGetRes, error) {
+	res, err := c.sendEntityHowEntityHowGet(ctx, params)
 	_ = res
-	return err
+	return res, err
 }
 
-func (c *Client) sendUpdatePet(ctx context.Context, params UpdatePetParams) (res *UpdatePetOK, err error) {
+func (c *Client) sendEntityHowEntityHowGet(ctx context.Context, params EntityHowEntityHowGetParams) (res EntityHowEntityHowGetRes, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("updatePet"),
+		otelogen.OperationID("entity_how_entity_how_get"),
 	}
 
 	// Run stopwatch.
 	startTime := time.Now()
 	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
 		elapsedDuration := time.Since(startTime)
-		c.duration.Record(ctx, elapsedDuration.Microseconds(), metric.WithAttributes(otelAttrs...))
+		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
 	}()
 
 	// Increment request counter.
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, "UpdatePet",
+	ctx, span := c.cfg.Tracer.Start(ctx, "EntityHowEntityHowGet",
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -370,60 +202,22 @@ func (c *Client) sendUpdatePet(ctx context.Context, params UpdatePetParams) (res
 
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
-	var pathParts [2]string
-	pathParts[0] = "/pet/"
-	{
-		// Encode "petId" parameter.
-		e := uri.NewPathEncoder(uri.PathEncoderConfig{
-			Param:   "petId",
-			Style:   uri.PathStyleSimple,
-			Explode: false,
-		})
-		if err := func() error {
-			return e.EncodeValue(conv.Int64ToString(params.PetId))
-		}(); err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		encoded, err := e.Result()
-		if err != nil {
-			return res, errors.Wrap(err, "encode path")
-		}
-		pathParts[1] = encoded
-	}
+	var pathParts [1]string
+	pathParts[0] = "/entity_how"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeQueryParams"
 	q := uri.NewQueryEncoder()
 	{
-		// Encode "name" parameter.
+		// Encode "entity_id" parameter.
 		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "name",
+			Name:    "entity_id",
 			Style:   uri.QueryStyleForm,
 			Explode: true,
 		}
 
 		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.Name.Get(); ok {
-				return e.EncodeValue(conv.StringToString(val))
-			}
-			return nil
-		}); err != nil {
-			return res, errors.Wrap(err, "encode query")
-		}
-	}
-	{
-		// Encode "status" parameter.
-		cfg := uri.QueryParameterEncodingConfig{
-			Name:    "status",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
-			if val, ok := params.Status.Get(); ok {
-				return e.EncodeValue(conv.StringToString(string(val)))
-			}
-			return nil
+			return e.EncodeValue(conv.IntToString(params.EntityID))
 		}); err != nil {
 			return res, errors.Wrap(err, "encode query")
 		}
@@ -431,7 +225,7 @@ func (c *Client) sendUpdatePet(ctx context.Context, params UpdatePetParams) (res
 	u.RawQuery = q.Values().Encode()
 
 	stage = "EncodeRequest"
-	r, err := ht.NewRequest(ctx, "POST", u)
+	r, err := ht.NewRequest(ctx, "GET", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
@@ -444,7 +238,170 @@ func (c *Client) sendUpdatePet(ctx context.Context, params UpdatePetParams) (res
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodeUpdatePetResponse(resp)
+	result, err := decodeEntityHowEntityHowGetResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// EntityReportEntityReportGet invokes entity_report_entity_report_get operation.
+//
+// Return 10 entities with either matches, possible matches, or relationships.
+//
+// GET /entity_report
+func (c *Client) EntityReportEntityReportGet(ctx context.Context, params EntityReportEntityReportGetParams) (EntityReportEntityReportGetRes, error) {
+	res, err := c.sendEntityReportEntityReportGet(ctx, params)
+	_ = res
+	return res, err
+}
+
+func (c *Client) sendEntityReportEntityReportGet(ctx context.Context, params EntityReportEntityReportGetParams) (res EntityReportEntityReportGetRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("entity_report_entity_report_get"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, "EntityReportEntityReportGet",
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/entity_report"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeQueryParams"
+	q := uri.NewQueryEncoder()
+	{
+		// Encode "export_flags" parameter.
+		cfg := uri.QueryParameterEncodingConfig{
+			Name:    "export_flags",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.EncodeParam(cfg, func(e uri.Encoder) error {
+			return e.EncodeValue(conv.StringToString(string(params.ExportFlags)))
+		}); err != nil {
+			return res, errors.Wrap(err, "encode query")
+		}
+	}
+	u.RawQuery = q.Values().Encode()
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeEntityReportEntityReportGetResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// EntitySearchEntitySearchPost invokes entity_search_entity_search_post operation.
+//
+// Retrieves entity data based on a user-specified set of entity attributes.
+//
+// POST /entity_search
+func (c *Client) EntitySearchEntitySearchPost(ctx context.Context, request *SearchAttributes) (EntitySearchEntitySearchPostRes, error) {
+	res, err := c.sendEntitySearchEntitySearchPost(ctx, request)
+	_ = res
+	return res, err
+}
+
+func (c *Client) sendEntitySearchEntitySearchPost(ctx context.Context, request *SearchAttributes) (res EntitySearchEntitySearchPostRes, err error) {
+	otelAttrs := []attribute.KeyValue{
+		otelogen.OperationID("entity_search_entity_search_post"),
+	}
+
+	// Run stopwatch.
+	startTime := time.Now()
+	defer func() {
+		// Use floating point division here for higher precision (instead of Millisecond method).
+		elapsedDuration := time.Since(startTime)
+		c.duration.Record(ctx, float64(float64(elapsedDuration)/float64(time.Millisecond)), metric.WithAttributes(otelAttrs...))
+	}()
+
+	// Increment request counter.
+	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+
+	// Start a span for this request.
+	ctx, span := c.cfg.Tracer.Start(ctx, "EntitySearchEntitySearchPost",
+		trace.WithAttributes(otelAttrs...),
+		clientSpanKind,
+	)
+	// Track stage for error reporting.
+	var stage string
+	defer func() {
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, stage)
+			c.errors.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
+		}
+		span.End()
+	}()
+
+	stage = "BuildURL"
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/entity_search"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	stage = "EncodeRequest"
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeEntitySearchEntitySearchPostRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	stage = "SendRequest"
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	stage = "DecodeResponse"
+	result, err := decodeEntitySearchEntitySearchPostResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

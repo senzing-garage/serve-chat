@@ -4,9 +4,6 @@ package senzingchatapi
 
 import (
 	"net/http"
-	"net/url"
-
-	"github.com/go-faster/errors"
 
 	"github.com/ogen-go/ogen/conv"
 	"github.com/ogen-go/ogen/middleware"
@@ -15,209 +12,167 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-// DeletePetParams is parameters of deletePet operation.
-type DeletePetParams struct {
-	// Pet id to delete.
-	PetId int64
+// EntityDetailsEntityDetailsGetParams is parameters of entity_details_entity_details_get operation.
+type EntityDetailsEntityDetailsGetParams struct {
+	EntityID int
 }
 
-func unpackDeletePetParams(packed middleware.Parameters) (params DeletePetParams) {
+func unpackEntityDetailsEntityDetailsGetParams(packed middleware.Parameters) (params EntityDetailsEntityDetailsGetParams) {
 	{
 		key := middleware.ParameterKey{
-			Name: "petId",
-			In:   "path",
-		}
-		params.PetId = packed[key].(int64)
-	}
-	return params
-}
-
-func decodeDeletePetParams(args [1]string, argsEscaped bool, r *http.Request) (params DeletePetParams, _ error) {
-	// Decode path: petId.
-	if err := func() error {
-		param := args[0]
-		if argsEscaped {
-			unescaped, err := url.PathUnescape(args[0])
-			if err != nil {
-				return errors.Wrap(err, "unescape path")
-			}
-			param = unescaped
-		}
-		if len(param) > 0 {
-			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "petId",
-				Value:   param,
-				Style:   uri.PathStyleSimple,
-				Explode: false,
-			})
-
-			if err := func() error {
-				val, err := d.DecodeValue()
-				if err != nil {
-					return err
-				}
-
-				c, err := conv.ToInt64(val)
-				if err != nil {
-					return err
-				}
-
-				params.PetId = c
-				return nil
-			}(); err != nil {
-				return err
-			}
-		} else {
-			return validate.ErrFieldRequired
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "petId",
-			In:   "path",
-			Err:  err,
-		}
-	}
-	return params, nil
-}
-
-// GetPetByIdParams is parameters of getPetById operation.
-type GetPetByIdParams struct {
-	// ID of pet to return.
-	PetId int64
-}
-
-func unpackGetPetByIdParams(packed middleware.Parameters) (params GetPetByIdParams) {
-	{
-		key := middleware.ParameterKey{
-			Name: "petId",
-			In:   "path",
-		}
-		params.PetId = packed[key].(int64)
-	}
-	return params
-}
-
-func decodeGetPetByIdParams(args [1]string, argsEscaped bool, r *http.Request) (params GetPetByIdParams, _ error) {
-	// Decode path: petId.
-	if err := func() error {
-		param := args[0]
-		if argsEscaped {
-			unescaped, err := url.PathUnescape(args[0])
-			if err != nil {
-				return errors.Wrap(err, "unescape path")
-			}
-			param = unescaped
-		}
-		if len(param) > 0 {
-			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "petId",
-				Value:   param,
-				Style:   uri.PathStyleSimple,
-				Explode: false,
-			})
-
-			if err := func() error {
-				val, err := d.DecodeValue()
-				if err != nil {
-					return err
-				}
-
-				c, err := conv.ToInt64(val)
-				if err != nil {
-					return err
-				}
-
-				params.PetId = c
-				return nil
-			}(); err != nil {
-				return err
-			}
-		} else {
-			return validate.ErrFieldRequired
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "petId",
-			In:   "path",
-			Err:  err,
-		}
-	}
-	return params, nil
-}
-
-// UpdatePetParams is parameters of updatePet operation.
-type UpdatePetParams struct {
-	// ID of pet that needs to be updated.
-	PetId int64
-	// Name of pet that needs to be updated.
-	Name OptString
-	// Status of pet that needs to be updated.
-	Status OptPetStatus
-}
-
-func unpackUpdatePetParams(packed middleware.Parameters) (params UpdatePetParams) {
-	{
-		key := middleware.ParameterKey{
-			Name: "petId",
-			In:   "path",
-		}
-		params.PetId = packed[key].(int64)
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "name",
+			Name: "entity_id",
 			In:   "query",
 		}
-		if v, ok := packed[key]; ok {
-			params.Name = v.(OptString)
-		}
-	}
-	{
-		key := middleware.ParameterKey{
-			Name: "status",
-			In:   "query",
-		}
-		if v, ok := packed[key]; ok {
-			params.Status = v.(OptPetStatus)
-		}
+		params.EntityID = packed[key].(int)
 	}
 	return params
 }
 
-func decodeUpdatePetParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdatePetParams, _ error) {
+func decodeEntityDetailsEntityDetailsGetParams(args [0]string, argsEscaped bool, r *http.Request) (params EntityDetailsEntityDetailsGetParams, _ error) {
 	q := uri.NewQueryDecoder(r.URL.Query())
-	// Decode path: petId.
+	// Decode query: entity_id.
 	if err := func() error {
-		param := args[0]
-		if argsEscaped {
-			unescaped, err := url.PathUnescape(args[0])
-			if err != nil {
-				return errors.Wrap(err, "unescape path")
-			}
-			param = unescaped
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "entity_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
 		}
-		if len(param) > 0 {
-			d := uri.NewPathDecoder(uri.PathDecoderConfig{
-				Param:   "petId",
-				Value:   param,
-				Style:   uri.PathStyleSimple,
-				Explode: false,
-			})
 
-			if err := func() error {
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
 				val, err := d.DecodeValue()
 				if err != nil {
 					return err
 				}
 
-				c, err := conv.ToInt64(val)
+				c, err := conv.ToInt(val)
 				if err != nil {
 					return err
 				}
 
-				params.PetId = c
+				params.EntityID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "entity_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// EntityHowEntityHowGetParams is parameters of entity_how_entity_how_get operation.
+type EntityHowEntityHowGetParams struct {
+	EntityID int
+}
+
+func unpackEntityHowEntityHowGetParams(packed middleware.Parameters) (params EntityHowEntityHowGetParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "entity_id",
+			In:   "query",
+		}
+		params.EntityID = packed[key].(int)
+	}
+	return params
+}
+
+func decodeEntityHowEntityHowGetParams(args [0]string, argsEscaped bool, r *http.Request) (params EntityHowEntityHowGetParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: entity_id.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "entity_id",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToInt(val)
+				if err != nil {
+					return err
+				}
+
+				params.EntityID = c
+				return nil
+			}); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "entity_id",
+			In:   "query",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// EntityReportEntityReportGetParams is parameters of entity_report_entity_report_get operation.
+type EntityReportEntityReportGetParams struct {
+	ExportFlags ExportFlags
+}
+
+func unpackEntityReportEntityReportGetParams(packed middleware.Parameters) (params EntityReportEntityReportGetParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "export_flags",
+			In:   "query",
+		}
+		params.ExportFlags = packed[key].(ExportFlags)
+	}
+	return params
+}
+
+func decodeEntityReportEntityReportGetParams(args [0]string, argsEscaped bool, r *http.Request) (params EntityReportEntityReportGetParams, _ error) {
+	q := uri.NewQueryDecoder(r.URL.Query())
+	// Decode query: export_flags.
+	if err := func() error {
+		cfg := uri.QueryParameterDecodingConfig{
+			Name:    "export_flags",
+			Style:   uri.QueryStyleForm,
+			Explode: true,
+		}
+
+		if err := q.HasParam(cfg); err == nil {
+			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.ExportFlags = ExportFlags(c)
+				return nil
+			}); err != nil {
+				return err
+			}
+			if err := func() error {
+				if err := params.ExportFlags.Validate(); err != nil {
+					return err
+				}
 				return nil
 			}(); err != nil {
 				return err
@@ -228,104 +183,7 @@ func decodeUpdatePetParams(args [1]string, argsEscaped bool, r *http.Request) (p
 		return nil
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
-			Name: "petId",
-			In:   "path",
-			Err:  err,
-		}
-	}
-	// Decode query: name.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "name",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotNameVal string
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotNameVal = c
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.Name.SetTo(paramsDotNameVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "name",
-			In:   "query",
-			Err:  err,
-		}
-	}
-	// Decode query: status.
-	if err := func() error {
-		cfg := uri.QueryParameterDecodingConfig{
-			Name:    "status",
-			Style:   uri.QueryStyleForm,
-			Explode: true,
-		}
-
-		if err := q.HasParam(cfg); err == nil {
-			if err := q.DecodeParam(cfg, func(d uri.Decoder) error {
-				var paramsDotStatusVal PetStatus
-				if err := func() error {
-					val, err := d.DecodeValue()
-					if err != nil {
-						return err
-					}
-
-					c, err := conv.ToString(val)
-					if err != nil {
-						return err
-					}
-
-					paramsDotStatusVal = PetStatus(c)
-					return nil
-				}(); err != nil {
-					return err
-				}
-				params.Status.SetTo(paramsDotStatusVal)
-				return nil
-			}); err != nil {
-				return err
-			}
-			if err := func() error {
-				if params.Status.Set {
-					if err := func() error {
-						if err := params.Status.Value.Validate(); err != nil {
-							return err
-						}
-						return nil
-					}(); err != nil {
-						return err
-					}
-				}
-				return nil
-			}(); err != nil {
-				return err
-			}
-		}
-		return nil
-	}(); err != nil {
-		return params, &ogenerrors.DecodeParamError{
-			Name: "status",
+			Name: "export_flags",
 			In:   "query",
 			Err:  err,
 		}

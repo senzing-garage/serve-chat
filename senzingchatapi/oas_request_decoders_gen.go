@@ -15,8 +15,8 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-func (s *Server) decodeAddPetRequest(r *http.Request) (
-	req *Pet,
+func (s *Server) decodeEntitySearchEntitySearchPostRequest(r *http.Request) (
+	req *SearchAttributes,
 	close func() error,
 	rerr error,
 ) {
@@ -55,7 +55,7 @@ func (s *Server) decodeAddPetRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request Pet
+		var request SearchAttributes
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err
@@ -71,14 +71,6 @@ func (s *Server) decodeAddPetRequest(r *http.Request) (
 				Err:         err,
 			}
 			return req, close, err
-		}
-		if err := func() error {
-			if err := request.Validate(); err != nil {
-				return err
-			}
-			return nil
-		}(); err != nil {
-			return req, close, errors.Wrap(err, "validate")
 		}
 		return &request, close, nil
 	default:

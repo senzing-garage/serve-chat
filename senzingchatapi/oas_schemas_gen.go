@@ -4,107 +4,85 @@ package senzingchatapi
 
 import (
 	"github.com/go-faster/errors"
+	"github.com/go-faster/jx"
 )
 
-// DeletePetOK is response for DeletePet operation.
-type DeletePetOK struct{}
+type EntityDetailsEntityDetailsGetOK struct{}
 
-// GetPetByIdNotFound is response for GetPetById operation.
-type GetPetByIdNotFound struct{}
+func (*EntityDetailsEntityDetailsGetOK) entityDetailsEntityDetailsGetRes() {}
 
-func (*GetPetByIdNotFound) getPetByIdRes() {}
+type EntityHowEntityHowGetOK struct{}
 
-// NewOptInt64 returns new OptInt64 with value set to v.
-func NewOptInt64(v int64) OptInt64 {
-	return OptInt64{
-		Value: v,
-		Set:   true,
+func (*EntityHowEntityHowGetOK) entityHowEntityHowGetRes() {}
+
+type EntityReportEntityReportGetOKApplicationJSON []jx.Raw
+
+func (*EntityReportEntityReportGetOKApplicationJSON) entityReportEntityReportGetRes() {}
+
+type EntitySearchEntitySearchPostOK struct{}
+
+func (*EntitySearchEntitySearchPostOK) entitySearchEntitySearchPostRes() {}
+
+// An enumeration.
+// Ref: #/components/schemas/ExportFlags
+type ExportFlags string
+
+const (
+	ExportFlagsMATCHED               ExportFlags = "MATCHED"
+	ExportFlagsPOSSIBLEMATCHES       ExportFlags = "POSSIBLE_MATCHES"
+	ExportFlagsPOSSIBLERELATIONSHIPS ExportFlags = "POSSIBLE_RELATIONSHIPS"
+)
+
+// MarshalText implements encoding.TextMarshaler.
+func (s ExportFlags) MarshalText() ([]byte, error) {
+	switch s {
+	case ExportFlagsMATCHED:
+		return []byte(s), nil
+	case ExportFlagsPOSSIBLEMATCHES:
+		return []byte(s), nil
+	case ExportFlagsPOSSIBLERELATIONSHIPS:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
 	}
 }
 
-// OptInt64 is optional int64.
-type OptInt64 struct {
-	Value int64
-	Set   bool
-}
-
-// IsSet returns true if OptInt64 was set.
-func (o OptInt64) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptInt64) Reset() {
-	var v int64
-	o.Value = v
-	o.Set = false
-}
-
-// SetTo sets value to v.
-func (o *OptInt64) SetTo(v int64) {
-	o.Set = true
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o OptInt64) Get() (v int64, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptInt64) Or(d int64) int64 {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
-
-// NewOptPetStatus returns new OptPetStatus with value set to v.
-func NewOptPetStatus(v PetStatus) OptPetStatus {
-	return OptPetStatus{
-		Value: v,
-		Set:   true,
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *ExportFlags) UnmarshalText(data []byte) error {
+	switch ExportFlags(data) {
+	case ExportFlagsMATCHED:
+		*s = ExportFlagsMATCHED
+		return nil
+	case ExportFlagsPOSSIBLEMATCHES:
+		*s = ExportFlagsPOSSIBLEMATCHES
+		return nil
+	case ExportFlagsPOSSIBLERELATIONSHIPS:
+		*s = ExportFlagsPOSSIBLERELATIONSHIPS
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
 	}
 }
 
-// OptPetStatus is optional PetStatus.
-type OptPetStatus struct {
-	Value PetStatus
-	Set   bool
+// Ref: #/components/schemas/HTTPValidationError
+type HTTPValidationError struct {
+	Detail []ValidationError `json:"detail"`
 }
 
-// IsSet returns true if OptPetStatus was set.
-func (o OptPetStatus) IsSet() bool { return o.Set }
-
-// Reset unsets value.
-func (o *OptPetStatus) Reset() {
-	var v PetStatus
-	o.Value = v
-	o.Set = false
+// GetDetail returns the value of Detail.
+func (s *HTTPValidationError) GetDetail() []ValidationError {
+	return s.Detail
 }
 
-// SetTo sets value to v.
-func (o *OptPetStatus) SetTo(v PetStatus) {
-	o.Set = true
-	o.Value = v
+// SetDetail sets the value of Detail.
+func (s *HTTPValidationError) SetDetail(val []ValidationError) {
+	s.Detail = val
 }
 
-// Get returns value and boolean that denotes whether value was set.
-func (o OptPetStatus) Get() (v PetStatus, ok bool) {
-	if !o.Set {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o OptPetStatus) Or(d PetStatus) PetStatus {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
-}
+func (*HTTPValidationError) entityDetailsEntityDetailsGetRes() {}
+func (*HTTPValidationError) entityHowEntityHowGetRes()         {}
+func (*HTTPValidationError) entityReportEntityReportGetRes()   {}
+func (*HTTPValidationError) entitySearchEntitySearchPostRes()  {}
 
 // NewOptString returns new OptString with value set to v.
 func NewOptString(v string) OptString {
@@ -152,96 +130,327 @@ func (o OptString) Or(d string) string {
 	return d
 }
 
-// Ref: #/components/schemas/Pet
-type Pet struct {
-	ID        OptInt64     `json:"id"`
-	Name      string       `json:"name"`
-	PhotoUrls []string     `json:"photoUrls"`
-	Status    OptPetStatus `json:"status"`
+// Ref: #/components/schemas/SearchAttributes
+type SearchAttributes struct {
+	ADDRCITY             OptString `json:"ADDR_CITY"`
+	ADDRCOUNTRY          OptString `json:"ADDR_COUNTRY"`
+	ADDRFULL             OptString `json:"ADDR_FULL"`
+	ADDRLINE1            OptString `json:"ADDR_LINE1"`
+	ADDRPOSTALCODE       OptString `json:"ADDR_POSTAL_CODE"`
+	ADDRSTATE            OptString `json:"ADDR_STATE"`
+	DATEOFBIRTH          OptString `json:"DATE_OF_BIRTH"`
+	DRIVERSLICENSENUMBER OptString `json:"DRIVERS_LICENSE_NUMBER"`
+	EMAILADDRESS         OptString `json:"EMAIL_ADDRESS"`
+	NAMEFIRST            OptString `json:"NAME_FIRST"`
+	NAMEFULL             OptString `json:"NAME_FULL"`
+	NAMELAST             OptString `json:"NAME_LAST"`
+	NAMEMIDDLE           OptString `json:"NAME_MIDDLE"`
+	NAMEORG              OptString `json:"NAME_ORG"`
+	NAMESUFFIX           OptString `json:"NAME_SUFFIX"`
+	NATIONALIDNUMBER     OptString `json:"NATIONAL_ID_NUMBER"`
+	PASSPORTCOUNTRY      OptString `json:"PASSPORT_COUNTRY"`
+	PASSPORTNUMBER       OptString `json:"PASSPORT_NUMBER"`
+	PHONENUMBER          OptString `json:"PHONE_NUMBER"`
+	SSNNUMBER            OptString `json:"SSN_NUMBER"`
 }
 
-// GetID returns the value of ID.
-func (s *Pet) GetID() OptInt64 {
-	return s.ID
+// GetADDRCITY returns the value of ADDRCITY.
+func (s *SearchAttributes) GetADDRCITY() OptString {
+	return s.ADDRCITY
 }
 
-// GetName returns the value of Name.
-func (s *Pet) GetName() string {
-	return s.Name
+// GetADDRCOUNTRY returns the value of ADDRCOUNTRY.
+func (s *SearchAttributes) GetADDRCOUNTRY() OptString {
+	return s.ADDRCOUNTRY
 }
 
-// GetPhotoUrls returns the value of PhotoUrls.
-func (s *Pet) GetPhotoUrls() []string {
-	return s.PhotoUrls
+// GetADDRFULL returns the value of ADDRFULL.
+func (s *SearchAttributes) GetADDRFULL() OptString {
+	return s.ADDRFULL
 }
 
-// GetStatus returns the value of Status.
-func (s *Pet) GetStatus() OptPetStatus {
-	return s.Status
+// GetADDRLINE1 returns the value of ADDRLINE1.
+func (s *SearchAttributes) GetADDRLINE1() OptString {
+	return s.ADDRLINE1
 }
 
-// SetID sets the value of ID.
-func (s *Pet) SetID(val OptInt64) {
-	s.ID = val
+// GetADDRPOSTALCODE returns the value of ADDRPOSTALCODE.
+func (s *SearchAttributes) GetADDRPOSTALCODE() OptString {
+	return s.ADDRPOSTALCODE
 }
 
-// SetName sets the value of Name.
-func (s *Pet) SetName(val string) {
-	s.Name = val
+// GetADDRSTATE returns the value of ADDRSTATE.
+func (s *SearchAttributes) GetADDRSTATE() OptString {
+	return s.ADDRSTATE
 }
 
-// SetPhotoUrls sets the value of PhotoUrls.
-func (s *Pet) SetPhotoUrls(val []string) {
-	s.PhotoUrls = val
+// GetDATEOFBIRTH returns the value of DATEOFBIRTH.
+func (s *SearchAttributes) GetDATEOFBIRTH() OptString {
+	return s.DATEOFBIRTH
 }
 
-// SetStatus sets the value of Status.
-func (s *Pet) SetStatus(val OptPetStatus) {
-	s.Status = val
+// GetDRIVERSLICENSENUMBER returns the value of DRIVERSLICENSENUMBER.
+func (s *SearchAttributes) GetDRIVERSLICENSENUMBER() OptString {
+	return s.DRIVERSLICENSENUMBER
 }
 
-func (*Pet) getPetByIdRes() {}
+// GetEMAILADDRESS returns the value of EMAILADDRESS.
+func (s *SearchAttributes) GetEMAILADDRESS() OptString {
+	return s.EMAILADDRESS
+}
 
-// Pet status in the store.
-// Ref: #/components/schemas/PetStatus
-type PetStatus string
+// GetNAMEFIRST returns the value of NAMEFIRST.
+func (s *SearchAttributes) GetNAMEFIRST() OptString {
+	return s.NAMEFIRST
+}
 
+// GetNAMEFULL returns the value of NAMEFULL.
+func (s *SearchAttributes) GetNAMEFULL() OptString {
+	return s.NAMEFULL
+}
+
+// GetNAMELAST returns the value of NAMELAST.
+func (s *SearchAttributes) GetNAMELAST() OptString {
+	return s.NAMELAST
+}
+
+// GetNAMEMIDDLE returns the value of NAMEMIDDLE.
+func (s *SearchAttributes) GetNAMEMIDDLE() OptString {
+	return s.NAMEMIDDLE
+}
+
+// GetNAMEORG returns the value of NAMEORG.
+func (s *SearchAttributes) GetNAMEORG() OptString {
+	return s.NAMEORG
+}
+
+// GetNAMESUFFIX returns the value of NAMESUFFIX.
+func (s *SearchAttributes) GetNAMESUFFIX() OptString {
+	return s.NAMESUFFIX
+}
+
+// GetNATIONALIDNUMBER returns the value of NATIONALIDNUMBER.
+func (s *SearchAttributes) GetNATIONALIDNUMBER() OptString {
+	return s.NATIONALIDNUMBER
+}
+
+// GetPASSPORTCOUNTRY returns the value of PASSPORTCOUNTRY.
+func (s *SearchAttributes) GetPASSPORTCOUNTRY() OptString {
+	return s.PASSPORTCOUNTRY
+}
+
+// GetPASSPORTNUMBER returns the value of PASSPORTNUMBER.
+func (s *SearchAttributes) GetPASSPORTNUMBER() OptString {
+	return s.PASSPORTNUMBER
+}
+
+// GetPHONENUMBER returns the value of PHONENUMBER.
+func (s *SearchAttributes) GetPHONENUMBER() OptString {
+	return s.PHONENUMBER
+}
+
+// GetSSNNUMBER returns the value of SSNNUMBER.
+func (s *SearchAttributes) GetSSNNUMBER() OptString {
+	return s.SSNNUMBER
+}
+
+// SetADDRCITY sets the value of ADDRCITY.
+func (s *SearchAttributes) SetADDRCITY(val OptString) {
+	s.ADDRCITY = val
+}
+
+// SetADDRCOUNTRY sets the value of ADDRCOUNTRY.
+func (s *SearchAttributes) SetADDRCOUNTRY(val OptString) {
+	s.ADDRCOUNTRY = val
+}
+
+// SetADDRFULL sets the value of ADDRFULL.
+func (s *SearchAttributes) SetADDRFULL(val OptString) {
+	s.ADDRFULL = val
+}
+
+// SetADDRLINE1 sets the value of ADDRLINE1.
+func (s *SearchAttributes) SetADDRLINE1(val OptString) {
+	s.ADDRLINE1 = val
+}
+
+// SetADDRPOSTALCODE sets the value of ADDRPOSTALCODE.
+func (s *SearchAttributes) SetADDRPOSTALCODE(val OptString) {
+	s.ADDRPOSTALCODE = val
+}
+
+// SetADDRSTATE sets the value of ADDRSTATE.
+func (s *SearchAttributes) SetADDRSTATE(val OptString) {
+	s.ADDRSTATE = val
+}
+
+// SetDATEOFBIRTH sets the value of DATEOFBIRTH.
+func (s *SearchAttributes) SetDATEOFBIRTH(val OptString) {
+	s.DATEOFBIRTH = val
+}
+
+// SetDRIVERSLICENSENUMBER sets the value of DRIVERSLICENSENUMBER.
+func (s *SearchAttributes) SetDRIVERSLICENSENUMBER(val OptString) {
+	s.DRIVERSLICENSENUMBER = val
+}
+
+// SetEMAILADDRESS sets the value of EMAILADDRESS.
+func (s *SearchAttributes) SetEMAILADDRESS(val OptString) {
+	s.EMAILADDRESS = val
+}
+
+// SetNAMEFIRST sets the value of NAMEFIRST.
+func (s *SearchAttributes) SetNAMEFIRST(val OptString) {
+	s.NAMEFIRST = val
+}
+
+// SetNAMEFULL sets the value of NAMEFULL.
+func (s *SearchAttributes) SetNAMEFULL(val OptString) {
+	s.NAMEFULL = val
+}
+
+// SetNAMELAST sets the value of NAMELAST.
+func (s *SearchAttributes) SetNAMELAST(val OptString) {
+	s.NAMELAST = val
+}
+
+// SetNAMEMIDDLE sets the value of NAMEMIDDLE.
+func (s *SearchAttributes) SetNAMEMIDDLE(val OptString) {
+	s.NAMEMIDDLE = val
+}
+
+// SetNAMEORG sets the value of NAMEORG.
+func (s *SearchAttributes) SetNAMEORG(val OptString) {
+	s.NAMEORG = val
+}
+
+// SetNAMESUFFIX sets the value of NAMESUFFIX.
+func (s *SearchAttributes) SetNAMESUFFIX(val OptString) {
+	s.NAMESUFFIX = val
+}
+
+// SetNATIONALIDNUMBER sets the value of NATIONALIDNUMBER.
+func (s *SearchAttributes) SetNATIONALIDNUMBER(val OptString) {
+	s.NATIONALIDNUMBER = val
+}
+
+// SetPASSPORTCOUNTRY sets the value of PASSPORTCOUNTRY.
+func (s *SearchAttributes) SetPASSPORTCOUNTRY(val OptString) {
+	s.PASSPORTCOUNTRY = val
+}
+
+// SetPASSPORTNUMBER sets the value of PASSPORTNUMBER.
+func (s *SearchAttributes) SetPASSPORTNUMBER(val OptString) {
+	s.PASSPORTNUMBER = val
+}
+
+// SetPHONENUMBER sets the value of PHONENUMBER.
+func (s *SearchAttributes) SetPHONENUMBER(val OptString) {
+	s.PHONENUMBER = val
+}
+
+// SetSSNNUMBER sets the value of SSNNUMBER.
+func (s *SearchAttributes) SetSSNNUMBER(val OptString) {
+	s.SSNNUMBER = val
+}
+
+// Ref: #/components/schemas/ValidationError
+type ValidationError struct {
+	Loc  []ValidationErrorLocItem `json:"loc"`
+	Msg  string                   `json:"msg"`
+	Type string                   `json:"type"`
+}
+
+// GetLoc returns the value of Loc.
+func (s *ValidationError) GetLoc() []ValidationErrorLocItem {
+	return s.Loc
+}
+
+// GetMsg returns the value of Msg.
+func (s *ValidationError) GetMsg() string {
+	return s.Msg
+}
+
+// GetType returns the value of Type.
+func (s *ValidationError) GetType() string {
+	return s.Type
+}
+
+// SetLoc sets the value of Loc.
+func (s *ValidationError) SetLoc(val []ValidationErrorLocItem) {
+	s.Loc = val
+}
+
+// SetMsg sets the value of Msg.
+func (s *ValidationError) SetMsg(val string) {
+	s.Msg = val
+}
+
+// SetType sets the value of Type.
+func (s *ValidationError) SetType(val string) {
+	s.Type = val
+}
+
+// ValidationErrorLocItem represents sum type.
+type ValidationErrorLocItem struct {
+	Type   ValidationErrorLocItemType // switch on this field
+	String string
+	Int    int
+}
+
+// ValidationErrorLocItemType is oneOf type of ValidationErrorLocItem.
+type ValidationErrorLocItemType string
+
+// Possible values for ValidationErrorLocItemType.
 const (
-	PetStatusAvailable PetStatus = "available"
-	PetStatusPending   PetStatus = "pending"
-	PetStatusSold      PetStatus = "sold"
+	StringValidationErrorLocItem ValidationErrorLocItemType = "string"
+	IntValidationErrorLocItem    ValidationErrorLocItemType = "int"
 )
 
-// MarshalText implements encoding.TextMarshaler.
-func (s PetStatus) MarshalText() ([]byte, error) {
-	switch s {
-	case PetStatusAvailable:
-		return []byte(s), nil
-	case PetStatusPending:
-		return []byte(s), nil
-	case PetStatusSold:
-		return []byte(s), nil
-	default:
-		return nil, errors.Errorf("invalid value: %q", s)
-	}
+// IsString reports whether ValidationErrorLocItem is string.
+func (s ValidationErrorLocItem) IsString() bool { return s.Type == StringValidationErrorLocItem }
+
+// IsInt reports whether ValidationErrorLocItem is int.
+func (s ValidationErrorLocItem) IsInt() bool { return s.Type == IntValidationErrorLocItem }
+
+// SetString sets ValidationErrorLocItem to string.
+func (s *ValidationErrorLocItem) SetString(v string) {
+	s.Type = StringValidationErrorLocItem
+	s.String = v
 }
 
-// UnmarshalText implements encoding.TextUnmarshaler.
-func (s *PetStatus) UnmarshalText(data []byte) error {
-	switch PetStatus(data) {
-	case PetStatusAvailable:
-		*s = PetStatusAvailable
-		return nil
-	case PetStatusPending:
-		*s = PetStatusPending
-		return nil
-	case PetStatusSold:
-		*s = PetStatusSold
-		return nil
-	default:
-		return errors.Errorf("invalid value: %q", data)
+// GetString returns string and true boolean if ValidationErrorLocItem is string.
+func (s ValidationErrorLocItem) GetString() (v string, ok bool) {
+	if !s.IsString() {
+		return v, false
 	}
+	return s.String, true
 }
 
-// UpdatePetOK is response for UpdatePet operation.
-type UpdatePetOK struct{}
+// NewStringValidationErrorLocItem returns new ValidationErrorLocItem from string.
+func NewStringValidationErrorLocItem(v string) ValidationErrorLocItem {
+	var s ValidationErrorLocItem
+	s.SetString(v)
+	return s
+}
+
+// SetInt sets ValidationErrorLocItem to int.
+func (s *ValidationErrorLocItem) SetInt(v int) {
+	s.Type = IntValidationErrorLocItem
+	s.Int = v
+}
+
+// GetInt returns int and true boolean if ValidationErrorLocItem is int.
+func (s ValidationErrorLocItem) GetInt() (v int, ok bool) {
+	if !s.IsInt() {
+		return v, false
+	}
+	return s.Int, true
+}
+
+// NewIntValidationErrorLocItem returns new ValidationErrorLocItem from int.
+func NewIntValidationErrorLocItem(v int) ValidationErrorLocItem {
+	var s ValidationErrorLocItem
+	s.SetInt(v)
+	return s
+}
