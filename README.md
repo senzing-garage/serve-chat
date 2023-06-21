@@ -32,7 +32,7 @@ the recommendation is not to use it yet.
     sudo yum install ./serve-chat-0.0.0.rpm
     ```
 
-### Docker
+### Using Docker
 
 1. Run Docker image against local SQLite database.
    Example:
