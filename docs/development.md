@@ -43,10 +43,10 @@ Since the Senzing library is a prerequisite, it must be installed first.
     ```
 
 1. Modify
-   [openapi.json](../cmd/openapi.json).
+   [openapi.json](../senzingchatservice/openapi.json).
    **Note:** It must be `json`.  For some reason `yaml` doesn't work.
 1. Generate code from
-   [openapi.json](../cmd/openapi.json).
+   [openapi.json](../senzingchatservice/openapi.json).
    Example:
 
     ```console
