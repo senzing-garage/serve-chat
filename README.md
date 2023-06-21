@@ -39,11 +39,12 @@ the recommendation is not to use it yet.
 
     ```console
     docker run \
+      --env SENZING_TOOLS_ENABLE_ALL=true \
       --env SENZING_TOOLS_DATABASE_URL=sqlite3://na:na@/tmp/sqlite/G2C.db \
       --publish 8262:8262 \
       --rm \
       --volume /tmp/sqlite:/tmp/sqlite \
-      senzing/serve-chat --enable-all
+      senzing/serve-chat
 
     ```
 
