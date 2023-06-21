@@ -11,8 +11,8 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 )
 
-func encodeAddPetRequest(
-	req *Pet,
+func encodeEntitySearchEntitySearchPostRequest(
+	req *SearchAttributes,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

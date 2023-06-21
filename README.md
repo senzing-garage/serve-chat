@@ -32,6 +32,24 @@ the recommendation is not to use it yet.
     sudo yum install ./serve-chat-0.0.0.rpm
     ```
 
+### Using Docker
+
+1. Run Docker image against local SQLite database.
+   Example:
+
+    ```console
+    docker run \
+      --env SENZING_TOOLS_ENABLE_ALL=true \
+      --env SENZING_TOOLS_DATABASE_URL=sqlite3://na:na@/tmp/sqlite/G2C.db \
+      --publish 8262:8262 \
+      --rm \
+      --volume /tmp/sqlite:/tmp/sqlite \
+      senzing/serve-chat
+
+    ```
+
+1. Open browser on [localhost:8252](http://localhost:8262)
+
 ## References
 
 1. [Development](docs/development.md)

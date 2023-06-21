@@ -11,29 +11,9 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-func encodeAddPetResponse(response *Pet, w http.ResponseWriter, span trace.Span) error {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
-
-	e := jx.GetEncoder()
-	response.Encode(e)
-	if _, err := e.WriteTo(w); err != nil {
-		return errors.Wrap(err, "write")
-	}
-	return nil
-}
-
-func encodeDeletePetResponse(response *DeletePetOK, w http.ResponseWriter, span trace.Span) error {
-	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
-
-	return nil
-}
-
-func encodeGetPetByIdResponse(response GetPetByIdRes, w http.ResponseWriter, span trace.Span) error {
+func encodeEntityDetailsEntityDetailsGetResponse(response EntityDetailsEntityDetailsGetRes, w http.ResponseWriter, span trace.Span) error {
 	switch response := response.(type) {
-	case *Pet:
+	case *EntityDetailsEntityDetailsGetOK:
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		span.SetStatus(codes.Ok, http.StatusText(200))
@@ -45,10 +25,16 @@ func encodeGetPetByIdResponse(response GetPetByIdRes, w http.ResponseWriter, spa
 		}
 		return nil
 
-	case *GetPetByIdNotFound:
-		w.WriteHeader(404)
-		span.SetStatus(codes.Error, http.StatusText(404))
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
 
+		e := jx.GetEncoder()
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
 		return nil
 
 	default:
@@ -56,9 +42,95 @@ func encodeGetPetByIdResponse(response GetPetByIdRes, w http.ResponseWriter, spa
 	}
 }
 
-func encodeUpdatePetResponse(response *UpdatePetOK, w http.ResponseWriter, span trace.Span) error {
-	w.WriteHeader(200)
-	span.SetStatus(codes.Ok, http.StatusText(200))
+func encodeEntityHowEntityHowGetResponse(response EntityHowEntityHowGetRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *EntityHowEntityHowGetOK:
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
 
-	return nil
+		e := jx.GetEncoder()
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := jx.GetEncoder()
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeEntityReportEntityReportGetResponse(response EntityReportEntityReportGetRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *EntityReportEntityReportGetOKApplicationJSON:
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := jx.GetEncoder()
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := jx.GetEncoder()
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
+}
+
+func encodeEntitySearchEntitySearchPostResponse(response EntitySearchEntitySearchPostRes, w http.ResponseWriter, span trace.Span) error {
+	switch response := response.(type) {
+	case *EntitySearchEntitySearchPostOK:
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		span.SetStatus(codes.Ok, http.StatusText(200))
+
+		e := jx.GetEncoder()
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+		return nil
+
+	case *HTTPValidationError:
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(422)
+		span.SetStatus(codes.Error, http.StatusText(422))
+
+		e := jx.GetEncoder()
+		response.Encode(e)
+		if _, err := e.WriteTo(w); err != nil {
+			return errors.Wrap(err, "write")
+		}
+		return nil
+
+	default:
+		return errors.Errorf("unexpected response type: %T", response)
+	}
 }

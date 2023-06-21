@@ -8,30 +8,30 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
-	// AddPet implements addPet operation.
+	// EntityDetailsEntityDetailsGet implements entity_details_entity_details_get operation.
 	//
-	// Add a new pet to the store.
+	// Retrieve entity data based on the ID of a resolved identity.
 	//
-	// POST /pet
-	AddPet(ctx context.Context, req *Pet) (*Pet, error)
-	// DeletePet implements deletePet operation.
+	// GET /entity_details
+	EntityDetailsEntityDetailsGet(ctx context.Context, params EntityDetailsEntityDetailsGetParams) (EntityDetailsEntityDetailsGetRes, error)
+	// EntityHowEntityHowGet implements entity_how_entity_how_get operation.
 	//
-	// Deletes a pet.
+	// Determines and details steps-by-step how records resolved to an ENTITY_ID.
 	//
-	// DELETE /pet/{petId}
-	DeletePet(ctx context.Context, params DeletePetParams) error
-	// GetPetById implements getPetById operation.
+	// GET /entity_how
+	EntityHowEntityHowGet(ctx context.Context, params EntityHowEntityHowGetParams) (EntityHowEntityHowGetRes, error)
+	// EntityReportEntityReportGet implements entity_report_entity_report_get operation.
 	//
-	// Returns a single pet.
+	// Return 10 entities with either matches, possible matches, or relationships.
 	//
-	// GET /pet/{petId}
-	GetPetById(ctx context.Context, params GetPetByIdParams) (GetPetByIdRes, error)
-	// UpdatePet implements updatePet operation.
+	// GET /entity_report
+	EntityReportEntityReportGet(ctx context.Context, params EntityReportEntityReportGetParams) (EntityReportEntityReportGetRes, error)
+	// EntitySearchEntitySearchPost implements entity_search_entity_search_post operation.
 	//
-	// Updates a pet in the store.
+	// Retrieves entity data based on a user-specified set of entity attributes.
 	//
-	// POST /pet/{petId}
-	UpdatePet(ctx context.Context, params UpdatePetParams) error
+	// POST /entity_search
+	EntitySearchEntitySearchPost(ctx context.Context, req *SearchAttributes) (EntitySearchEntitySearchPostRes, error)
 }
 
 // Server implements http server based on OpenAPI v3 specification and

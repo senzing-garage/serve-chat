@@ -35,7 +35,6 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		s.notFound(w, r)
 		return
 	}
-	args := [1]string{}
 
 	// Static code generated router with unwrapped path search.
 	switch {
@@ -44,53 +43,85 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/pet"
-			if l := len("/pet"); len(elem) >= l && elem[0:l] == "/pet" {
+		case '/': // Prefix: "/entity_"
+			if l := len("/entity_"); len(elem) >= l && elem[0:l] == "/entity_" {
 				elem = elem[l:]
 			} else {
 				break
 			}
 
 			if len(elem) == 0 {
-				switch r.Method {
-				case "POST":
-					s.handleAddPetRequest([0]string{}, elemIsEscaped, w, r)
-				default:
-					s.notAllowed(w, r, "POST")
-				}
-
-				return
+				break
 			}
 			switch elem[0] {
-			case '/': // Prefix: "/"
-				if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+			case 'd': // Prefix: "details"
+				if l := len("details"); len(elem) >= l && elem[0:l] == "details" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
-				// Param: "petId"
-				// Leaf parameter
-				args[0] = elem
-				elem = ""
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "GET":
+						s.handleEntityDetailsEntityDetailsGetRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "GET")
+					}
+
+					return
+				}
+			case 'h': // Prefix: "how"
+				if l := len("how"); len(elem) >= l && elem[0:l] == "how" {
+					elem = elem[l:]
+				} else {
+					break
+				}
 
 				if len(elem) == 0 {
 					// Leaf node.
 					switch r.Method {
-					case "DELETE":
-						s.handleDeletePetRequest([1]string{
-							args[0],
-						}, elemIsEscaped, w, r)
 					case "GET":
-						s.handleGetPetByIdRequest([1]string{
-							args[0],
-						}, elemIsEscaped, w, r)
-					case "POST":
-						s.handleUpdatePetRequest([1]string{
-							args[0],
-						}, elemIsEscaped, w, r)
+						s.handleEntityHowEntityHowGetRequest([0]string{}, elemIsEscaped, w, r)
 					default:
-						s.notAllowed(w, r, "DELETE,GET,POST")
+						s.notAllowed(w, r, "GET")
+					}
+
+					return
+				}
+			case 'r': // Prefix: "report"
+				if l := len("report"); len(elem) >= l && elem[0:l] == "report" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "GET":
+						s.handleEntityReportEntityReportGetRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "GET")
+					}
+
+					return
+				}
+			case 's': // Prefix: "search"
+				if l := len("search"); len(elem) >= l && elem[0:l] == "search" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "POST":
+						s.handleEntitySearchEntitySearchPostRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "POST")
 					}
 
 					return
@@ -107,7 +138,7 @@ type Route struct {
 	operationID string
 	pathPattern string
 	count       int
-	args        [1]string
+	args        [0]string
 }
 
 // Name returns ogen operation name.
@@ -165,64 +196,96 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/pet"
-			if l := len("/pet"); len(elem) >= l && elem[0:l] == "/pet" {
+		case '/': // Prefix: "/entity_"
+			if l := len("/entity_"); len(elem) >= l && elem[0:l] == "/entity_" {
 				elem = elem[l:]
 			} else {
 				break
 			}
 
 			if len(elem) == 0 {
-				switch method {
-				case "POST":
-					r.name = "AddPet"
-					r.operationID = "addPet"
-					r.pathPattern = "/pet"
-					r.args = args
-					r.count = 0
-					return r, true
-				default:
-					return
-				}
+				break
 			}
 			switch elem[0] {
-			case '/': // Prefix: "/"
-				if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+			case 'd': // Prefix: "details"
+				if l := len("details"); len(elem) >= l && elem[0:l] == "details" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
-				// Param: "petId"
-				// Leaf parameter
-				args[0] = elem
-				elem = ""
+				if len(elem) == 0 {
+					switch method {
+					case "GET":
+						// Leaf: EntityDetailsEntityDetailsGet
+						r.name = "EntityDetailsEntityDetailsGet"
+						r.operationID = "entity_details_entity_details_get"
+						r.pathPattern = "/entity_details"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+			case 'h': // Prefix: "how"
+				if l := len("how"); len(elem) >= l && elem[0:l] == "how" {
+					elem = elem[l:]
+				} else {
+					break
+				}
 
 				if len(elem) == 0 {
 					switch method {
-					case "DELETE":
-						// Leaf: DeletePet
-						r.name = "DeletePet"
-						r.operationID = "deletePet"
-						r.pathPattern = "/pet/{petId}"
-						r.args = args
-						r.count = 1
-						return r, true
 					case "GET":
-						// Leaf: GetPetById
-						r.name = "GetPetById"
-						r.operationID = "getPetById"
-						r.pathPattern = "/pet/{petId}"
+						// Leaf: EntityHowEntityHowGet
+						r.name = "EntityHowEntityHowGet"
+						r.operationID = "entity_how_entity_how_get"
+						r.pathPattern = "/entity_how"
 						r.args = args
-						r.count = 1
+						r.count = 0
 						return r, true
-					case "POST":
-						// Leaf: UpdatePet
-						r.name = "UpdatePet"
-						r.operationID = "updatePet"
-						r.pathPattern = "/pet/{petId}"
+					default:
+						return
+					}
+				}
+			case 'r': // Prefix: "report"
+				if l := len("report"); len(elem) >= l && elem[0:l] == "report" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch method {
+					case "GET":
+						// Leaf: EntityReportEntityReportGet
+						r.name = "EntityReportEntityReportGet"
+						r.operationID = "entity_report_entity_report_get"
+						r.pathPattern = "/entity_report"
 						r.args = args
-						r.count = 1
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+			case 's': // Prefix: "search"
+				if l := len("search"); len(elem) >= l && elem[0:l] == "search" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					switch method {
+					case "POST":
+						// Leaf: EntitySearchEntitySearchPost
+						r.name = "EntitySearchEntitySearchPost"
+						r.operationID = "entity_search_entity_search_post"
+						r.pathPattern = "/entity_search"
+						r.args = args
+						r.count = 0
 						return r, true
 					default:
 						return
