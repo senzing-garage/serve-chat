@@ -58,7 +58,7 @@ Since the Senzing library is a prerequisite, it must be installed first.
 1. Modify
    [senzingchatservice.go](../senzingchatservice/senzingchatservice.go)
    implementing method invocations seen in
-   [oas_unimplemented_gen.go]((../senzingchatapi/oas_unimplemented_gen.go)
+   [oas_unimplemented_gen.go](../senzingchatapi/oas_unimplemented_gen.go)
 
 1. Create clean SQLite test database.
    Example:
