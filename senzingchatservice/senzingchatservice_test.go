@@ -20,7 +20,7 @@ var (
 
 func getTestObject(ctx context.Context, test *testing.T) ChatApiService {
 	if chatApiServiceSingleton == nil {
-		senzingEngineConfigurationJson, err := g2engineconfigurationjson.BuildSimpleSystemConfigurationJson("")
+		senzingEngineConfigurationJson, err := g2engineconfigurationjson.BuildSimpleSystemConfigurationJsonUsingEnvVars()
 		if err != nil {
 			test.Errorf("Error: %s", err)
 		}
