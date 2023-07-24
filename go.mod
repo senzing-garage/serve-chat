@@ -8,12 +8,12 @@ require (
 	github.com/go-faster/jx v1.0.1
 	github.com/ogen-go/ogen v0.71.1
 	github.com/senzing/g2-sdk-go v0.6.7
+	github.com/senzing/go-cmdhelping v0.1.1
 	github.com/senzing/go-common v0.2.4
 	github.com/senzing/go-grpcing v0.1.1
 	github.com/senzing/go-logging v1.3.1
 	github.com/senzing/go-observing v0.2.6
 	github.com/senzing/go-sdk-abstract-factory v0.3.1
-	github.com/senzing/senzing-tools v0.3.1-0.20230713235126-9b84c4e632b4
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
@@ -62,7 +62,7 @@ require (
 	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.10.0 // indirect
 	golang.org/x/text v0.11.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230711160842-782d3b101e98 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230720185612-659f7aaaa771 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
