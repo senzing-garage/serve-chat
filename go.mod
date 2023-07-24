@@ -9,7 +9,7 @@ require (
 	github.com/ogen-go/ogen v0.71.1
 	github.com/senzing/g2-sdk-go v0.6.7
 	github.com/senzing/go-cmdhelping v0.1.1
-	github.com/senzing/go-common v0.2.4
+	github.com/senzing/go-common v0.2.5
 	github.com/senzing/go-grpcing v0.1.1
 	github.com/senzing/go-logging v1.3.1
 	github.com/senzing/go-observing v0.2.6
