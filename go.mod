@@ -6,7 +6,7 @@ require (
 	github.com/flowchartsman/swaggerui v0.0.0-20221017034628-909ed4f3701b
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v1.0.1
-	github.com/ogen-go/ogen v0.71.1
+	github.com/ogen-go/ogen v0.72.0
 	github.com/senzing/g2-sdk-go v0.6.7
 	github.com/senzing/go-cmdhelping v0.1.2
 	github.com/senzing/go-common v0.2.6
@@ -57,7 +57,7 @@ require (
 	github.com/subosito/gotenv v1.4.2 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
-	golang.org/x/exp v0.0.0-20230713183714-613f0c0eb8a1 // indirect
+	golang.org/x/exp v0.0.0-20230725093048-515e97ebf090 // indirect
 	golang.org/x/net v0.12.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.10.0 // indirect
