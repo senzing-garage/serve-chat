@@ -8,7 +8,7 @@ require (
 	github.com/go-faster/jx v1.0.1
 	github.com/ogen-go/ogen v0.72.0
 	github.com/senzing/g2-sdk-go v0.6.7
-	github.com/senzing/go-cmdhelping v0.1.2
+	github.com/senzing/go-cmdhelping v0.1.3
 	github.com/senzing/go-common v0.2.6
 	github.com/senzing/go-grpcing v0.1.1
 	github.com/senzing/go-logging v1.3.1
