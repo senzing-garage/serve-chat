@@ -13,7 +13,7 @@ require (
 	github.com/senzing/go-grpcing v0.1.2
 	github.com/senzing/go-logging v1.3.2
 	github.com/senzing/go-observing v0.2.7
-	github.com/senzing/go-sdk-abstract-factory v0.3.1
+	github.com/senzing/go-sdk-abstract-factory v0.3.2
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
@@ -46,8 +46,8 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
-	github.com/senzing/g2-sdk-go-base v0.2.2 // indirect
-	github.com/senzing/g2-sdk-go-grpc v0.3.1 // indirect
+	github.com/senzing/g2-sdk-go-base v0.2.4 // indirect
+	github.com/senzing/g2-sdk-go-grpc v0.3.2 // indirect
 	github.com/senzing/g2-sdk-proto/go v0.0.0-20230608182106-25c8cdc02e3c // indirect
 	github.com/senzing/go-messaging v1.3.2 // indirect
 	github.com/spf13/afero v1.9.5 // indirect
@@ -57,12 +57,12 @@ require (
 	github.com/subosito/gotenv v1.4.2 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
-	golang.org/x/exp v0.0.0-20230801115018-d63ba01acd4b // indirect
-	golang.org/x/net v0.13.0 // indirect
+	golang.org/x/exp v0.0.0-20230809094429-853ea248256d // indirect
+	golang.org/x/net v0.14.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.11.0 // indirect
 	golang.org/x/text v0.12.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230803162519-f966b187b2e5 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230807174057-1744710a1577 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
