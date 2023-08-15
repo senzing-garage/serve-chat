@@ -171,8 +171,8 @@ github.com/mattn/go-isatty v0.0.19 h1:JITubQf0MOLdlGRuRq+jtsDlekdYPia9ZFsB8h/APP
 github.com/mattn/go-isatty v0.0.19/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
 github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyuac5Z2hdY=
 github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
-github.com/ogen-go/ogen v0.72.1 h1:rNgBxI7yBh2irIwuQyd7Q8SNhZPK69VjYCaiN6MP1u8=
-github.com/ogen-go/ogen v0.72.1/go.mod h1:2SgZ9FRMXsuUhdTq23nFBFgMaXQl6yennmAnIs+hofM=
+github.com/ogen-go/ogen v0.73.0 h1:h9HFV2V/h7UTKewlJpvOjx0gHIjjn4O9mjKe3eLNWkY=
+github.com/ogen-go/ogen v0.73.0/go.mod h1:CS1RfTfLLcxw968GF2pEw8r6P6YTlU+mCOTGJvl7P2c=
 github.com/pelletier/go-toml/v2 v2.0.9 h1:uH2qQXheeefCCkuBBSLi7jCiSmj3VRh2+Goq2N7Xxu0=
 github.com/pelletier/go-toml/v2 v2.0.9/go.mod h1:tJU2Z3ZkXwnxa4DPO899bsyIoywizdUvyaeZurnPPDc=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
