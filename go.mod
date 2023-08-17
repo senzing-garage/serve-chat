@@ -8,7 +8,7 @@ require (
 	github.com/go-faster/jx v1.1.0
 	github.com/ogen-go/ogen v0.73.0
 	github.com/senzing/g2-sdk-go v0.6.8
-	github.com/senzing/go-cmdhelping v0.1.5
+	github.com/senzing/go-cmdhelping v0.1.6
 	github.com/senzing/go-common v0.2.13
 	github.com/senzing/go-grpcing v0.1.2
 	github.com/senzing/go-logging v1.3.2
@@ -54,7 +54,7 @@ require (
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/subosito/gotenv v1.4.2 // indirect
+	github.com/subosito/gotenv v1.6.0 // indirect
 	go.uber.org/zap v1.25.0 // indirect
 	golang.org/x/exp v0.0.0-20230809150735-7b3493d9a819 // indirect
 	golang.org/x/net v0.14.0 // indirect
