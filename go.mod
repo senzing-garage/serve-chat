@@ -1,6 +1,6 @@
 module github.com/senzing/serve-chat
 
-go 1.20
+go 1.21
 
 require (
 	github.com/flowchartsman/swaggerui v0.0.0-20221017034628-909ed4f3701b
@@ -8,7 +8,7 @@ require (
 	github.com/go-faster/jx v1.1.0
 	github.com/ogen-go/ogen v0.73.0
 	github.com/senzing/g2-sdk-go v0.6.8
-	github.com/senzing/go-cmdhelping v0.1.6
+	github.com/senzing/go-cmdhelping v0.1.7
 	github.com/senzing/go-common v0.2.13
 	github.com/senzing/go-grpcing v0.1.2
 	github.com/senzing/go-logging v1.3.2
@@ -56,12 +56,12 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	go.uber.org/zap v1.25.0 // indirect
-	golang.org/x/exp v0.0.0-20230809150735-7b3493d9a819 // indirect
+	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63 // indirect
 	golang.org/x/net v0.14.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.11.0 // indirect
 	golang.org/x/text v0.12.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230807174057-1744710a1577 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230815205213-6bfd019c3878 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

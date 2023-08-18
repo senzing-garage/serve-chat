@@ -20,6 +20,12 @@
 # Go workspace file
 go.work
 
-.history
-target/
+# macOS artifacts
+.DS_STORE
+
+# Visual Studio code
 .vscode
+.history
+
+# Makefile
+target/
