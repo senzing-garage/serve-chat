@@ -8,8 +8,8 @@ require (
 	github.com/go-faster/jx v1.1.0
 	github.com/ogen-go/ogen v0.73.0
 	github.com/senzing/g2-sdk-go v0.6.8
-	github.com/senzing/go-cmdhelping v0.1.7
-	github.com/senzing/go-common v0.2.13
+	github.com/senzing/go-cmdhelping v0.1.8
+	github.com/senzing/go-common v0.2.14
 	github.com/senzing/go-grpcing v0.1.2
 	github.com/senzing/go-logging v1.3.2
 	github.com/senzing/go-observing v0.2.7
@@ -17,9 +17,9 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
-	go.opentelemetry.io/otel v1.16.0
-	go.opentelemetry.io/otel/metric v1.16.0
-	go.opentelemetry.io/otel/trace v1.16.0
+	go.opentelemetry.io/otel v1.17.0
+	go.opentelemetry.io/otel/metric v1.17.0
+	go.opentelemetry.io/otel/trace v1.17.0
 	go.uber.org/multierr v1.11.0
 	google.golang.org/grpc v1.57.0
 )
@@ -35,18 +35,18 @@ require (
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/google/uuid v1.3.0 // indirect
+	github.com/google/uuid v1.3.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/pelletier/go-toml/v2 v2.0.9 // indirect
+	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
-	github.com/senzing/g2-sdk-go-base v0.2.4 // indirect
+	github.com/senzing/g2-sdk-go-base v0.2.6 // indirect
 	github.com/senzing/g2-sdk-go-grpc v0.3.2 // indirect
 	github.com/senzing/g2-sdk-proto/go v0.0.0-20230608182106-25c8cdc02e3c // indirect
 	github.com/senzing/go-messaging v1.3.2 // indirect
@@ -61,7 +61,7 @@ require (
 	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.11.0 // indirect
 	golang.org/x/text v0.12.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230815205213-6bfd019c3878 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230822172742-b8732ec3820d // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
