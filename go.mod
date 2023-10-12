@@ -7,7 +7,7 @@ require (
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v1.1.0
 	github.com/ogen-go/ogen v0.76.0
-	github.com/senzing/g2-sdk-go v0.7.1
+	github.com/senzing/g2-sdk-go v0.7.3
 	github.com/senzing/go-cmdhelping v0.1.8
 	github.com/senzing/go-common v0.3.0
 	github.com/senzing/go-grpcing v0.1.2
@@ -59,7 +59,7 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
-	golang.org/x/net v0.16.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
