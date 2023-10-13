@@ -38,7 +38,7 @@ type HttpServerImpl struct {
 	ReadHeaderTimeout              time.Duration
 	SenzingEngineConfigurationJson string
 	SenzingModuleName              string
-	SenzingVerboseLogging          int
+	SenzingVerboseLogging          int64
 	ServerAddress                  string
 	ServerOptions                  []senzingchatapi.ServerOption
 	ServerPort                     int
