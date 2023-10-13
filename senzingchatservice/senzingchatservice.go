@@ -35,7 +35,7 @@ type ChatApiServiceImpl struct {
 	Port                           int
 	SenzingEngineConfigurationJson string
 	SenzingModuleName              string
-	SenzingVerboseLogging          int
+	SenzingVerboseLogging          int64
 	UrlRoutePrefix                 string
 }
 
