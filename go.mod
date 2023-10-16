@@ -7,12 +7,12 @@ require (
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v1.1.0
 	github.com/ogen-go/ogen v0.76.0
-	github.com/senzing/g2-sdk-go v0.7.3
+	github.com/senzing/g2-sdk-go v0.7.4
 	github.com/senzing/go-cmdhelping v0.1.8
 	github.com/senzing/go-common v0.3.0
 	github.com/senzing/go-grpcing v0.1.2
 	github.com/senzing/go-logging v1.3.2
-	github.com/senzing/go-observing v0.2.7
+	github.com/senzing/go-observing v0.2.8
 	github.com/senzing/go-sdk-abstract-factory v0.4.1
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.17.0
