@@ -6,7 +6,7 @@ require (
 	github.com/flowchartsman/swaggerui v0.0.0-20221017034628-909ed4f3701b
 	github.com/go-faster/errors v0.6.1
 	github.com/go-faster/jx v1.1.0
-	github.com/ogen-go/ogen v0.76.0
+	github.com/ogen-go/ogen v0.77.0
 	github.com/senzing/g2-sdk-go v0.7.4
 	github.com/senzing/go-cmdhelping v0.1.9
 	github.com/senzing/go-common v0.3.1
@@ -35,7 +35,7 @@ require (
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/google/uuid v1.3.1 // indirect
+	github.com/google/uuid v1.4.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
