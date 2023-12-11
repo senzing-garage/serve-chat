@@ -7,7 +7,7 @@ require (
 	github.com/go-faster/errors v0.7.0
 	github.com/go-faster/jx v1.1.0
 	github.com/ogen-go/ogen v0.80.1
-	github.com/senzing/g2-sdk-go v0.7.4
+	github.com/senzing/g2-sdk-go v0.7.5
 	github.com/senzing/go-cmdhelping v0.1.9
 	github.com/senzing/go-common v0.3.2-0.20231018174900-c1895fb44c30
 	github.com/senzing/go-grpcing v0.1.3
@@ -63,7 +63,7 @@ require (
 	golang.org/x/sync v0.5.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20231120223509-83a465c0220f // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20231127180814-3a041ad873d4 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
