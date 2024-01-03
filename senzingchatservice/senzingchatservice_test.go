@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/senzing/go-common/g2engineconfigurationjson"
+	"github.com/senzing-garage/go-common/g2engineconfigurationjson"
 	"github.com/stretchr/testify/assert"
 )
 

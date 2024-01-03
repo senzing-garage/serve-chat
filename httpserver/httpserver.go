@@ -13,9 +13,9 @@ import (
 	"time"
 
 	"github.com/flowchartsman/swaggerui"
-	"github.com/senzing/go-observing/observer"
-	"github.com/senzing/serve-chat/senzingchatapi"
-	"github.com/senzing/serve-chat/senzingchatservice"
+	"github.com/senzing-garage/go-observing/observer"
+	"github.com/senzing-garage/serve-chat/senzingchatapi"
+	"github.com/senzing-garage/serve-chat/senzingchatservice"
 	"google.golang.org/grpc"
 )
 

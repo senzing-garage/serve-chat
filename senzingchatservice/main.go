@@ -3,7 +3,7 @@ package senzingchatservice
 import (
 	_ "embed"
 
-	"github.com/senzing/serve-chat/senzingchatapi"
+	"github.com/senzing-garage/serve-chat/senzingchatapi"
 )
 
 // ----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ type ChatApiService interface {
 // ----------------------------------------------------------------------------
 
 // Identfier of the  package found messages having the format "senzing-6620xxxx".
-// See https://github.com/Senzing/knowledge-base/blob/main/lists/senzing-component-ids.md
+// See https://github.com/senzing-garage/knowledge-base/blob/main/lists/senzing-component-ids.md
 const ComponentId = 6620
 
 // Log message prefix.
