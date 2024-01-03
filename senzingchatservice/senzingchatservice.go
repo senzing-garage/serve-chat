@@ -4,11 +4,11 @@ import (
 	"context"
 	"sync"
 
-	"github.com/senzing/g2-sdk-go/g2api"
 	"github.com/senzing-garage/go-logging/logging"
 	"github.com/senzing-garage/go-observing/observer"
-	"github.com/senzing/go-sdk-abstract-factory/factory"
 	api "github.com/senzing-garage/serve-chat/senzingchatapi"
+	"github.com/senzing/g2-sdk-go/g2api"
+	"github.com/senzing/go-sdk-abstract-factory/factory"
 	"google.golang.org/grpc"
 )
 
