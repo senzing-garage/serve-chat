@@ -4,11 +4,11 @@ import (
 	"context"
 	"sync"
 
+	"github.com/senzing-garage/go-logging/logging"
+	"github.com/senzing-garage/go-observing/observer"
+	api "github.com/senzing-garage/serve-chat/senzingchatapi"
 	"github.com/senzing/g2-sdk-go/g2api"
-	"github.com/senzing/go-logging/logging"
-	"github.com/senzing/go-observing/observer"
 	"github.com/senzing/go-sdk-abstract-factory/factory"
-	api "github.com/senzing/serve-chat/senzingchatapi"
 	"google.golang.org/grpc"
 )
 
@@ -130,7 +130,7 @@ func (chatApiService *ChatApiServiceImpl) getG2product(ctx context.Context) g2ap
 
 // ----------------------------------------------------------------------------
 // Interface methods
-// See https://github.com/senzing/serve-chat/blob/main/senzingchatpapi/oas_unimplemented_gen.go
+// See https://github.com/senzing-garage/serve-chat/blob/main/senzingchatpapi/oas_unimplemented_gen.go
 // ----------------------------------------------------------------------------
 
 // AddPet implements addPet operation.
