@@ -12,7 +12,7 @@ require (
 	github.com/senzing-garage/go-grpcing v0.2.0
 	github.com/senzing-garage/go-logging v1.4.0
 	github.com/senzing-garage/go-observing v0.3.0
-	github.com/senzing/g2-sdk-go v0.8.0
+	github.com/senzing/g2-sdk-go v0.9.0
 	github.com/senzing/go-sdk-abstract-factory v0.5.0
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
@@ -63,7 +63,7 @@ require (
 	golang.org/x/sync v0.6.0 // indirect
 	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240102182953-50ed04b92917 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240125205218-1f4bbc51befe // indirect
 	google.golang.org/protobuf v1.32.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
