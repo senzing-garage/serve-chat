@@ -1,8 +1,13 @@
 name: make-github-release-assets.yaml
+
 on:
   push:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
+
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Publish binaries
