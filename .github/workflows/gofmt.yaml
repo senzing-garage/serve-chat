@@ -1,4 +1,4 @@
-name: gofmt.yaml
+name: 'gofmt'
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
 
 permissions:
   contents: read
-    
+
 jobs:
   gofmt:
-    uses: senzing-factory/build-resources/.github/workflows/gofmt.yaml@main
+    uses: senzing-factory/build-resources/.github/workflows/gofmt.yaml@v1
