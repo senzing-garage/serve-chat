@@ -1,4 +1,4 @@
-name: make-github-release-assets.yaml
+name: make github release assets
 
 on:
   push:
@@ -9,14 +9,17 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    name: Publish binaries
+  make-github-release-assets:
+    name: publish binaries
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
+      - name: checkout repository
         uses: actions/checkout@v4
+
       - run: make package
-      - name: Upload files to release assets
+
+      - name: upload files to release assets
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
