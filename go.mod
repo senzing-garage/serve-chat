@@ -10,10 +10,10 @@ require (
 	github.com/go-faster/jx v1.1.0
 	github.com/ogen-go/ogen v1.1.0
 	github.com/senzing-garage/g2-sdk-go v0.10.1
-	github.com/senzing-garage/go-cmdhelping v0.2.0
+	github.com/senzing-garage/go-cmdhelping v0.2.1
 	github.com/senzing-garage/go-common v0.4.0
 	github.com/senzing-garage/go-grpcing v0.2.0
-	github.com/senzing-garage/go-logging v1.4.0
+	github.com/senzing-garage/go-logging v1.4.1
 	github.com/senzing-garage/go-observing v0.3.1
 	github.com/senzing-garage/go-sdk-abstract-factory v0.7.0
 	github.com/spf13/cobra v1.8.0
@@ -43,7 +43,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
+	github.com/pelletier/go-toml/v2 v2.2.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
@@ -52,14 +52,15 @@ require (
 	github.com/senzing-garage/g2-sdk-go-base v0.6.1 // indirect
 	github.com/senzing-garage/g2-sdk-go-grpc v0.7.0 // indirect
 	github.com/senzing-garage/g2-sdk-proto/go v0.0.0-20240229231149-cd5a92459976 // indirect
-	github.com/senzing-garage/go-messaging v1.4.0 // indirect
+	github.com/senzing-garage/go-helpers v0.5.1 // indirect
+	github.com/senzing-garage/go-messaging v1.4.1 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.6.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/exp v0.0.0-20240314144324-c7f7c6466f7f // indirect
+	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
 	golang.org/x/net v0.24.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect
