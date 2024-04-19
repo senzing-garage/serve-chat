@@ -12,7 +12,7 @@ require (
 	github.com/senzing-garage/g2-sdk-go v0.10.1
 	github.com/senzing-garage/go-cmdhelping v0.2.1
 	github.com/senzing-garage/go-common v0.4.0
-	github.com/senzing-garage/go-grpcing v0.2.0
+	github.com/senzing-garage/go-grpcing v0.2.1
 	github.com/senzing-garage/go-logging v1.4.1
 	github.com/senzing-garage/go-observing v0.3.1
 	github.com/senzing-garage/go-sdk-abstract-factory v0.7.0
