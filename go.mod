@@ -8,7 +8,7 @@ require (
 	github.com/flowchartsman/swaggerui v0.0.0-20221017034628-909ed4f3701b
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.1.0
-	github.com/ogen-go/ogen v1.1.0
+	github.com/ogen-go/ogen v1.1.1
 	github.com/senzing-garage/go-cmdhelping v0.2.1
 	github.com/senzing-garage/go-grpcing v0.2.1
 	github.com/senzing-garage/go-helpers v0.5.1
@@ -30,7 +30,7 @@ require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dlclark/regexp2 v1.11.0 // indirect
-	github.com/fatih/color v1.16.0 // indirect
+	github.com/fatih/color v1.17.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-faster/yaml v0.4.6 // indirect
