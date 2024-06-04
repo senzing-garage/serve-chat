@@ -13,7 +13,7 @@ require (
 	github.com/senzing-garage/go-grpcing v0.2.1
 	github.com/senzing-garage/go-helpers v0.5.1
 	github.com/senzing-garage/go-logging v1.4.1
-	github.com/senzing-garage/go-observing v0.3.1
+	github.com/senzing-garage/go-observing v0.3.2
 	github.com/senzing-garage/go-sdk-abstract-factory v0.8.0
 	github.com/senzing-garage/sz-sdk-go v0.12.4
 	github.com/spf13/cobra v1.8.0
