@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/senzing-garage/go-cmdhelping/cmdhelper"
-	"github.com/senzing-garage/go-cmdhelping/engineconfiguration"
 	"github.com/senzing-garage/go-cmdhelping/option"
+	"github.com/senzing-garage/go-cmdhelping/settings"
 	"github.com/senzing-garage/go-grpcing/grpcurl"
 	"github.com/senzing-garage/go-observing/observer"
 	"github.com/senzing-garage/serve-chat/httpserver"
@@ -82,7 +82,7 @@ func RunE(_ *cobra.Command, _ []string) error {
 	var err error = nil
 	ctx := context.Background()
 
-	senzingEngineConfigurationJson, err := engineconfiguration.BuildAndVerifySenzingEngineConfigurationJson(ctx, viper.GetViper())
+	senzingEngineConfigurationJson, err := settings.BuildAndVerifySenzingEngineConfigurationJson(ctx, viper.GetViper())
 	if err != nil {
 		return err
 	}

@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/senzing-garage/go-helpers/engineconfigurationjson"
+	"github.com/senzing-garage/go-helpers/settings"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,7 +21,7 @@ var (
 func getTestObject(ctx context.Context, test *testing.T) ChatApiService {
 	_ = ctx
 	if chatApiServiceSingleton == nil {
-		senzingEngineConfigurationJson, err := engineconfigurationjson.BuildSimpleSystemConfigurationJsonUsingEnvVars()
+		senzingEngineConfigurationJson, err := settings.BuildSimpleSystemConfigurationJsonUsingEnvVars()
 		if err != nil {
 			test.Errorf("Error: %s", err)
 		}

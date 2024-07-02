@@ -8,7 +8,7 @@ import (
 	"github.com/senzing-garage/go-observing/observer"
 	"github.com/senzing-garage/go-sdk-abstract-factory/szfactorycreator"
 	api "github.com/senzing-garage/serve-chat/senzingchatapi"
-	"github.com/senzing-garage/sz-sdk-go/sz"
+	"github.com/senzing-garage/sz-sdk-go/senzing"
 	"google.golang.org/grpc"
 )
 
@@ -19,7 +19,7 @@ import (
 // ChatApiServiceImpl is...
 type ChatApiServiceImpl struct {
 	api.UnimplementedHandler
-	abstractFactory                sz.SzAbstractFactory
+	abstractFactory                senzing.SzAbstractFactory
 	abstractFactorySyncOnce        sync.Once
 	GrpcDialOptions                []grpc.DialOption
 	GrpcTarget                     string
@@ -32,9 +32,9 @@ type ChatApiServiceImpl struct {
 	SenzingEngineConfigurationJson string
 	SenzingModuleName              string
 	SenzingVerboseLogging          int64
-	szEngineSingleton              sz.SzEngine
+	szEngineSingleton              senzing.SzEngine
 	szEngineSyncOnce               sync.Once
-	szProductSingleton             sz.SzProduct
+	szProductSingleton             senzing.SzProduct
 	szProductSyncOnce              sync.Once
 	UrlRoutePrefix                 string
 }
@@ -74,11 +74,11 @@ func (chatApiService *ChatApiServiceImpl) error(messageNumber int, details ...in
 
 // --- Services ---------------------------------------------------------------
 
-func (chatApiService *ChatApiServiceImpl) getAbstractFactory(ctx context.Context) sz.SzAbstractFactory {
+func (chatApiService *ChatApiServiceImpl) getAbstractFactory(ctx context.Context) senzing.SzAbstractFactory {
 	var err error = nil
 	chatApiService.abstractFactorySyncOnce.Do(func() {
 		if len(chatApiService.GrpcTarget) == 0 {
-			chatApiService.abstractFactory, err = szfactorycreator.CreateCoreAbstractFactory(chatApiService.SenzingModuleName, chatApiService.SenzingEngineConfigurationJson, chatApiService.SenzingVerboseLogging, sz.SZ_INITIALIZE_WITH_DEFAULT_CONFIGURATION)
+			chatApiService.abstractFactory, err = szfactorycreator.CreateCoreAbstractFactory(chatApiService.SenzingModuleName, chatApiService.SenzingEngineConfigurationJson, chatApiService.SenzingVerboseLogging, senzing.SzInitializeWithDefaultConfiguration)
 			if err != nil {
 				panic(err)
 			}
@@ -98,7 +98,7 @@ func (chatApiService *ChatApiServiceImpl) getAbstractFactory(ctx context.Context
 
 // Singleton pattern for g2product.
 // See https://medium.com/golang-issue/how-singleton-pattern-works-with-golang-2fdd61cd5a7f
-func (chatApiService *ChatApiServiceImpl) getG2engine(ctx context.Context) sz.SzEngine {
+func (chatApiService *ChatApiServiceImpl) getG2engine(ctx context.Context) senzing.SzEngine {
 	var err error = nil
 	chatApiService.szEngineSyncOnce.Do(func() {
 		chatApiService.szEngineSingleton, err = chatApiService.getAbstractFactory(ctx).CreateSzEngine(ctx)
@@ -111,7 +111,7 @@ func (chatApiService *ChatApiServiceImpl) getG2engine(ctx context.Context) sz.Sz
 
 // Singleton pattern for g2product.
 // See https://medium.com/golang-issue/how-singleton-pattern-works-with-golang-2fdd61cd5a7f
-func (chatApiService *ChatApiServiceImpl) getG2product(ctx context.Context) sz.SzProduct {
+func (chatApiService *ChatApiServiceImpl) getG2product(ctx context.Context) senzing.SzProduct {
 	var err error = nil
 	chatApiService.szProductSyncOnce.Do(func() {
 		chatApiService.szProductSingleton, err = chatApiService.getAbstractFactory(ctx).CreateSzProduct(ctx)
