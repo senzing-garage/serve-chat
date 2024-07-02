@@ -18,6 +18,7 @@ func (s EntityReportEntityReportGetOKApplicationJSON) Validate() error {
 	}
 	return nil
 }
+
 func (s ExportFlags) Validate() error {
 	switch s {
 	case "MATCHED":
@@ -30,7 +31,12 @@ func (s ExportFlags) Validate() error {
 		return errors.Errorf("invalid value: %v", s)
 	}
 }
+
 func (s *HTTPValidationError) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		var failures []validate.FieldError
@@ -62,7 +68,12 @@ func (s *HTTPValidationError) Validate() error {
 	}
 	return nil
 }
+
 func (s *ValidationError) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
 	var failures []validate.FieldError
 	if err := func() error {
 		if s.Loc == nil {

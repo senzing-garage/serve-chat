@@ -33,6 +33,15 @@ const (
 	ExportFlagsPOSSIBLERELATIONSHIPS ExportFlags = "POSSIBLE_RELATIONSHIPS"
 )
 
+// AllValues returns all ExportFlags values.
+func (ExportFlags) AllValues() []ExportFlags {
+	return []ExportFlags{
+		ExportFlagsMATCHED,
+		ExportFlagsPOSSIBLEMATCHES,
+		ExportFlagsPOSSIBLERELATIONSHIPS,
+	}
+}
+
 // MarshalText implements encoding.TextMarshaler.
 func (s ExportFlags) MarshalText() ([]byte, error) {
 	switch s {
