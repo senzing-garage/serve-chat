@@ -23,7 +23,7 @@ type ChatApiServiceImpl struct {
 	abstractFactorySyncOnce        sync.Once
 	GrpcDialOptions                []grpc.DialOption
 	GrpcTarget                     string
-	logger                         logging.LoggingInterface
+	logger                         logging.Logging
 	LogLevelName                   string
 	ObserverOrigin                 string
 	Observers                      []observer.Observer
@@ -46,13 +46,13 @@ type ChatApiServiceImpl struct {
 // --- Logging ----------------------------------------------------------------
 
 // Get the Logger singleton.
-func (chatApiService *ChatApiServiceImpl) getLogger() logging.LoggingInterface {
+func (chatApiService *ChatApiServiceImpl) getLogger() logging.Logging {
 	var err error = nil
 	if chatApiService.logger == nil {
 		loggerOptions := []interface{}{
 			&logging.OptionCallerSkip{Value: 3},
 		}
-		chatApiService.logger, err = logging.NewSenzingToolsLogger(ComponentId, IdMessages, loggerOptions...)
+		chatApiService.logger, err = logging.NewSenzingLogger(ComponentId, IdMessages, loggerOptions...)
 		if err != nil {
 			panic(err)
 		}

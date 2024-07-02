@@ -33,18 +33,18 @@ const (
 
 var ContextVariablesForMultiPlatform = []option.ContextVariable{
 	option.Configuration,
-	option.DatabaseUrl,
+	option.DatabaseURL,
 	option.EnableAll,
-	option.EnableSenzingChatApi,
-	option.EnableSwaggerUi,
-	option.EngineConfigurationJson,
+	option.EnableSenzingChatAPI,
+	option.EnableSwaggerUI,
+	option.EngineConfigurationJSON,
 	option.EngineLogLevel,
 	option.EngineModuleName,
-	option.GrpcUrl,
-	option.HttpPort,
+	option.GrpcURL,
+	option.HTTPPort,
 	option.LogLevel,
 	option.ObserverOrigin,
-	option.ObserverUrl,
+	option.ObserverURL,
 	option.ServerAddress,
 }
 
@@ -82,14 +82,14 @@ func RunE(_ *cobra.Command, _ []string) error {
 	var err error = nil
 	ctx := context.Background()
 
-	senzingEngineConfigurationJson, err := settings.BuildAndVerifySenzingEngineConfigurationJson(ctx, viper.GetViper())
+	senzingEngineConfigurationJson, err := settings.BuildAndVerifySettings(ctx, viper.GetViper())
 	if err != nil {
 		return err
 	}
 
 	// Determine if gRPC is being used.
 
-	grpcUrl := viper.GetString(option.GrpcUrl.Arg)
+	grpcUrl := viper.GetString(option.GrpcURL.Arg)
 	grpcTarget := ""
 	grpcDialOptions := []grpc.DialOption{}
 	if len(grpcUrl) > 0 {
@@ -109,8 +109,8 @@ func RunE(_ *cobra.Command, _ []string) error {
 	httpServer := &httpserver.HttpServerImpl{
 		ChatUrlRoutePrefix:             "chat",
 		EnableAll:                      viper.GetBool(option.EnableAll.Arg),
-		EnableSenzingChatAPI:           viper.GetBool(option.EnableSenzingChatApi.Arg),
-		EnableSwaggerUI:                viper.GetBool(option.EnableSwaggerUi.Arg),
+		EnableSenzingChatAPI:           viper.GetBool(option.EnableSenzingChatAPI.Arg),
+		EnableSwaggerUI:                viper.GetBool(option.EnableSwaggerUI.Arg),
 		GrpcDialOptions:                grpcDialOptions,
 		GrpcTarget:                     grpcTarget,
 		LogLevelName:                   viper.GetString(option.LogLevel.Arg),
@@ -122,7 +122,7 @@ func RunE(_ *cobra.Command, _ []string) error {
 		SenzingModuleName:              viper.GetString(option.EngineModuleName.Arg),
 		SenzingVerboseLogging:          viper.GetInt64(option.EngineLogLevel.Arg),
 		ServerAddress:                  viper.GetString(option.ServerAddress.Arg),
-		ServerPort:                     viper.GetInt(option.HttpPort.Arg),
+		ServerPort:                     viper.GetInt(option.HTTPPort.Arg),
 		SwaggerUrlRoutePrefix:          "swagger",
 	}
 	return httpServer.Serve(ctx)

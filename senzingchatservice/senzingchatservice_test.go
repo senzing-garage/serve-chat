@@ -21,7 +21,7 @@ var (
 func getTestObject(ctx context.Context, test *testing.T) ChatApiService {
 	_ = ctx
 	if chatApiServiceSingleton == nil {
-		senzingEngineConfigurationJson, err := settings.BuildSimpleSystemConfigurationJsonUsingEnvVars()
+		senzingEngineConfigurationJson, err := settings.BuildSimpleSettingsUsingEnvVars()
 		if err != nil {
 			test.Errorf("Error: %s", err)
 		}
@@ -81,6 +81,6 @@ func TestChatApiServiceImpl_AddPet(test *testing.T) {
 // Examples for godoc documentation
 // ----------------------------------------------------------------------------
 
-func ExampleChatApiServiceImpl_AddPet() {
+func ExampleChatAPIServiceImpl_AddPet() {
 
 }
