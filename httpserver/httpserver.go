@@ -23,36 +23,37 @@ import (
 // Types
 // ----------------------------------------------------------------------------
 
-// HttpServerImpl is the default implementation of the HttpServer interface.
-type HttpServerImpl struct {
-	ChatUrlRoutePrefix             string // FIXME: Only works with "chat"
-	EnableAll                      bool
-	EnableSenzingChatAPI           bool
-	EnableSwaggerUI                bool
-	GrpcDialOptions                []grpc.DialOption
-	GrpcTarget                     string
-	LogLevelName                   string
-	ObserverOrigin                 string
-	Observers                      []observer.Observer
-	OpenApiSpecification           []byte
-	ReadHeaderTimeout              time.Duration
-	SenzingEngineConfigurationJson string
-	SenzingModuleName              string
-	SenzingVerboseLogging          int64
-	ServerAddress                  string
-	ServerOptions                  []senzingchatapi.ServerOption
-	ServerPort                     int
-	SwaggerUrlRoutePrefix          string // FIXME: Only works with "swagger"
+// BasicHTTPServer is the default implementation of the HttpServer interface.
+type BasicHTTPServer struct {
+	AvoidServing          bool
+	ChatURLRoutePrefix    string // FIXME: Only works with "chat"
+	EnableAll             bool
+	EnableSenzingChatAPI  bool
+	EnableSwaggerUI       bool
+	GrpcDialOptions       []grpc.DialOption
+	GrpcTarget            string
+	LogLevelName          string
+	ObserverOrigin        string
+	Observers             []observer.Observer
+	OpenAPISpecification  []byte
+	ReadHeaderTimeout     time.Duration
+	Setting               string
+	SenzingInstanceName   string
+	SenzingVerboseLogging int64
+	ServerAddress         string
+	ServerOptions         []senzingchatapi.ServerOption
+	ServerPort            int
+	SwaggerURLRoutePrefix string // FIXME: Only works with "swagger"
 }
 
 type TemplateVariables struct {
-	HttpServerImpl
+	BasicHTTPServer
 	ChatServerStatus string
-	ChatServerUrl    string
-	HtmlTitle        string
+	ChatServerURL    string
+	HTMLTitle        string
 	RequestHost      string
 	SwaggerStatus    string
-	SwaggerUrl       string
+	SwaggerURL       string
 }
 
 // ----------------------------------------------------------------------------
@@ -66,7 +67,7 @@ var static embed.FS
 // Internal methods
 // ----------------------------------------------------------------------------
 
-func (httpServer *HttpServerImpl) getServerStatus(up bool) string {
+func (httpServer *BasicHTTPServer) getServerStatus(up bool) string {
 	result := "red"
 	if httpServer.EnableAll {
 		result = "green"
@@ -77,7 +78,7 @@ func (httpServer *HttpServerImpl) getServerStatus(up bool) string {
 	return result
 }
 
-func (httpServer *HttpServerImpl) getServerUrl(up bool, url string) string {
+func (httpServer *BasicHTTPServer) getServerURL(up bool, url string) string {
 	result := ""
 	if httpServer.EnableAll {
 		result = url
@@ -88,18 +89,20 @@ func (httpServer *HttpServerImpl) getServerUrl(up bool, url string) string {
 	return result
 }
 
-func (httpServer *HttpServerImpl) openApiFunc(ctx context.Context, openApiSpecification []byte) http.HandlerFunc {
+func (httpServer *BasicHTTPServer) openAPIFunc(ctx context.Context, openAPISpecification []byte) http.HandlerFunc {
+	_ = ctx
+	_ = openAPISpecification
 	return func(w http.ResponseWriter, r *http.Request) {
 		var bytesBuffer bytes.Buffer
 		bufioWriter := bufio.NewWriter(&bytesBuffer)
-		openApiSpecificationTemplate, err := template.New("OpenApiTemplate").Parse(string(httpServer.OpenApiSpecification))
+		openAPISpecificationTemplate, err := template.New("OpenApiTemplate").Parse(string(httpServer.OpenAPISpecification))
 		if err != nil {
 			panic(err)
 		}
 		templateVariables := TemplateVariables{
 			RequestHost: string(r.Host),
 		}
-		err = openApiSpecificationTemplate.Execute(bufioWriter, templateVariables)
+		err = openAPISpecificationTemplate.Execute(bufioWriter, templateVariables)
 		if err != nil {
 			panic(err)
 		}
@@ -109,7 +112,8 @@ func (httpServer *HttpServerImpl) openApiFunc(ctx context.Context, openApiSpecif
 		}
 	}
 }
-func (httpServer *HttpServerImpl) populateStaticTemplate(responseWriter http.ResponseWriter, request *http.Request, filepath string, templateVariables TemplateVariables) {
+func (httpServer *BasicHTTPServer) populateStaticTemplate(responseWriter http.ResponseWriter, request *http.Request, filepath string, templateVariables TemplateVariables) {
+	_ = request
 	templateBytes, err := static.ReadFile(filepath)
 	if err != nil {
 		http.Error(responseWriter, http.StatusText(500), 500)
@@ -129,18 +133,19 @@ func (httpServer *HttpServerImpl) populateStaticTemplate(responseWriter http.Res
 
 // --- http.ServeMux ----------------------------------------------------------
 
-func (httpServer *HttpServerImpl) getSenzingChatMux(ctx context.Context) *senzingchatapi.Server {
-	service := &senzingchatservice.ChatApiServiceImpl{
-		GrpcDialOptions:                httpServer.GrpcDialOptions,
-		GrpcTarget:                     httpServer.GrpcTarget,
-		LogLevelName:                   httpServer.LogLevelName,
-		ObserverOrigin:                 httpServer.ObserverOrigin,
-		Observers:                      httpServer.Observers,
-		SenzingEngineConfigurationJson: httpServer.SenzingEngineConfigurationJson,
-		SenzingModuleName:              httpServer.SenzingModuleName,
-		SenzingVerboseLogging:          httpServer.SenzingVerboseLogging,
-		UrlRoutePrefix:                 httpServer.ChatUrlRoutePrefix,
-		OpenApiSpecificationSpec:       httpServer.OpenApiSpecification,
+func (httpServer *BasicHTTPServer) getSenzingChatMux(ctx context.Context) *senzingchatapi.Server {
+	_ = ctx
+	service := &senzingchatservice.BasicChatAPIService{
+		GrpcDialOptions:          httpServer.GrpcDialOptions,
+		GrpcTarget:               httpServer.GrpcTarget,
+		LogLevelName:             httpServer.LogLevelName,
+		ObserverOrigin:           httpServer.ObserverOrigin,
+		Observers:                httpServer.Observers,
+		Settings:                 httpServer.Setting,
+		SenzingInstanceName:      httpServer.SenzingInstanceName,
+		SenzingVerboseLogging:    httpServer.SenzingVerboseLogging,
+		URLRoutePrefix:           httpServer.ChatURLRoutePrefix,
+		OpenAPISpecificationSpec: httpServer.OpenAPISpecification,
 	}
 	srv, err := senzingchatapi.NewServer(service, httpServer.ServerOptions...)
 	if err != nil {
@@ -149,24 +154,24 @@ func (httpServer *HttpServerImpl) getSenzingChatMux(ctx context.Context) *senzin
 	return srv
 }
 
-func (httpServer *HttpServerImpl) getSwaggerUiMux(ctx context.Context) *http.ServeMux {
+func (httpServer *BasicHTTPServer) getSwaggerUIMux(ctx context.Context) *http.ServeMux {
 	swaggerMux := swaggerui.Handler([]byte{}) // OpenAPI specification handled by openApiFunc()
 	swaggerFunc := swaggerMux.ServeHTTP
 	submux := http.NewServeMux()
 	submux.HandleFunc("/", swaggerFunc)
-	submux.HandleFunc("/swagger_spec", httpServer.openApiFunc(ctx, httpServer.OpenApiSpecification))
+	submux.HandleFunc("/swagger_spec", httpServer.openAPIFunc(ctx, httpServer.OpenAPISpecification))
 	return submux
 }
 
 // --- Http Funcs -------------------------------------------------------------
 
-func (httpServer *HttpServerImpl) siteFunc(w http.ResponseWriter, r *http.Request) {
+func (httpServer *BasicHTTPServer) siteFunc(w http.ResponseWriter, r *http.Request) {
 	templateVariables := TemplateVariables{
-		HttpServerImpl:   *httpServer,
-		HtmlTitle:        "serve-chat",
-		ChatServerUrl:    httpServer.getServerUrl(httpServer.EnableSenzingChatAPI, fmt.Sprintf("http://%s/chat", r.Host)),
+		BasicHTTPServer:  *httpServer,
+		HTMLTitle:        "serve-chat",
+		ChatServerURL:    httpServer.getServerURL(httpServer.EnableSenzingChatAPI, fmt.Sprintf("http://%s/chat", r.Host)),
 		ChatServerStatus: httpServer.getServerStatus(httpServer.EnableSenzingChatAPI),
-		SwaggerUrl:       httpServer.getServerUrl(httpServer.EnableSwaggerUI, fmt.Sprintf("http://%s/swagger", r.Host)),
+		SwaggerURL:       httpServer.getServerURL(httpServer.EnableSwaggerUI, fmt.Sprintf("http://%s/swagger", r.Host)),
 		SwaggerStatus:    httpServer.getServerStatus(httpServer.EnableSwaggerUI),
 	}
 	w.Header().Set("Content-Type", "text/html")
@@ -189,24 +194,24 @@ Output
     See the example output.
 */
 
-func (httpServer *HttpServerImpl) Serve(ctx context.Context) error {
+func (httpServer *BasicHTTPServer) Serve(ctx context.Context) error {
 	rootMux := http.NewServeMux()
-	var userMessage string = ""
+	var userMessage = ""
 
 	// Enable Senzing HTTP Chat API.
 
 	if httpServer.EnableAll || httpServer.EnableSenzingChatAPI {
-		senzingApiMux := httpServer.getSenzingChatMux(ctx)
-		rootMux.Handle(fmt.Sprintf("/%s/", httpServer.ChatUrlRoutePrefix), http.StripPrefix("/chat", senzingApiMux))
-		userMessage = fmt.Sprintf("%sServing Senzing Chat API at http://localhost:%d/%s\n", userMessage, httpServer.ServerPort, httpServer.ChatUrlRoutePrefix)
+		senzingAPIMux := httpServer.getSenzingChatMux(ctx)
+		rootMux.Handle(fmt.Sprintf("/%s/", httpServer.ChatURLRoutePrefix), http.StripPrefix("/chat", senzingAPIMux))
+		userMessage = fmt.Sprintf("%sServing Senzing Chat API at http://localhost:%d/%s\n", userMessage, httpServer.ServerPort, httpServer.ChatURLRoutePrefix)
 	}
 
 	// Enable SwaggerUI.
 
 	if httpServer.EnableAll || httpServer.EnableSwaggerUI {
-		swaggerUiMux := httpServer.getSwaggerUiMux(ctx)
-		rootMux.Handle(fmt.Sprintf("/%s/", httpServer.SwaggerUrlRoutePrefix), http.StripPrefix("/swagger", swaggerUiMux))
-		userMessage = fmt.Sprintf("%sServing SwaggerUI at        http://localhost:%d/%s\n", userMessage, httpServer.ServerPort, httpServer.SwaggerUrlRoutePrefix)
+		swaggerUIMux := httpServer.getSwaggerUIMux(ctx)
+		rootMux.Handle(fmt.Sprintf("/%s/", httpServer.SwaggerURLRoutePrefix), http.StripPrefix("/swagger", swaggerUIMux))
+		userMessage = fmt.Sprintf("%sServing SwaggerUI at        http://localhost:%d/%s\n", userMessage, httpServer.ServerPort, httpServer.SwaggerURLRoutePrefix)
 	}
 
 	// Add route to template pages.
@@ -232,5 +237,9 @@ func (httpServer *HttpServerImpl) Serve(ctx context.Context) error {
 		Addr:              listenOnAddress,
 		Handler:           rootMux,
 	}
-	return server.ListenAndServe()
+
+	if !httpServer.AvoidServing {
+		return server.ListenAndServe()
+	}
+	return nil
 }

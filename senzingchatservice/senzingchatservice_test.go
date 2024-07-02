@@ -1,86 +1,43 @@
 package senzingchatservice
 
 import (
-	"context"
-	"fmt"
-	"os"
 	"testing"
-
-	"github.com/senzing-garage/go-helpers/settings"
-	"github.com/stretchr/testify/assert"
 )
 
 var (
-	chatApiServiceSingleton ChatApiService
+// chatAPIServiceSingleton ChatAPIService
 )
 
 // ----------------------------------------------------------------------------
 // Internal functions
 // ----------------------------------------------------------------------------
 
-func getTestObject(ctx context.Context, test *testing.T) ChatApiService {
-	_ = ctx
-	if chatApiServiceSingleton == nil {
-		senzingEngineConfigurationJson, err := settings.BuildSimpleSettingsUsingEnvVars()
-		if err != nil {
-			test.Errorf("Error: %s", err)
-		}
-		chatApiServiceSingleton = &ChatApiServiceImpl{
-			SenzingEngineConfigurationJson: senzingEngineConfigurationJson,
-			SenzingModuleName:              "go-rest-api-service-test",
-			SenzingVerboseLogging:          0,
-		}
-	}
-	return chatApiServiceSingleton
-}
-
-func testError(test *testing.T, ctx context.Context, err error) {
-	_ = ctx
-	if err != nil {
-		test.Log("Error:", err.Error())
-		assert.FailNow(test, err.Error())
-	}
-}
-
-// ----------------------------------------------------------------------------
-// Test harness
-// ----------------------------------------------------------------------------
-
-func TestMain(m *testing.M) {
-	err := setup()
-	if err != nil {
-		fmt.Print(err)
-		os.Exit(1)
-	}
-	code := m.Run()
-	err = teardown()
-	if err != nil {
-		fmt.Print(err)
-	}
-	os.Exit(code)
-}
-
-func setup() error {
-	var err error = nil
-	return err
-}
-
-func teardown() error {
-	var err error = nil
-	return err
-}
+// func getTestObject(ctx context.Context, test *testing.T) ChatAPIService {
+// 	_ = ctx
+// 	if chatAPIServiceSingleton == nil {
+// 		senzingEngineConfigurationJSON, err := settings.BuildSimpleSettingsUsingEnvVars()
+// 		require.NoError(test, err)
+// 		chatAPIServiceSingleton = &BasicChatAPIService{
+// 			Settings:              senzingEngineConfigurationJSON,
+// 			SenzingInstanceName:   "go-rest-api-service-test",
+// 			SenzingVerboseLogging: 0,
+// 		}
+// 	}
+// 	return chatAPIServiceSingleton
+// }
 
 // ----------------------------------------------------------------------------
 // Test interface functions
 // ----------------------------------------------------------------------------
 
-func TestChatApiServiceImpl_AddPet(test *testing.T) {
+func TestBasicChatAPIService_AddPet(test *testing.T) {
+	_ = test
 }
 
 // ----------------------------------------------------------------------------
 // Examples for godoc documentation
 // ----------------------------------------------------------------------------
 
-func ExampleChatAPIServiceImpl_AddPet() {
+// func ExampleBasicChatAPIService_AddPet() {
 
-}
+// }
