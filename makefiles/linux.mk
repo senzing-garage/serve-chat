@@ -23,7 +23,7 @@ clean-osarch-specific:
 	@rm -f  $(MAKEFILE_DIRECTORY)/coverage.html || true
 	@rm -f  $(MAKEFILE_DIRECTORY)/coverage.out || true
 	@rm -fr $(TARGET_DIRECTORY) || true
-	@rm -rf /tmp/sqlite || true
+	@rm -fr /tmp/sqlite || true
 
 
 .PHONY: coverage-osarch-specific

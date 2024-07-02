@@ -21,7 +21,7 @@ Since the Senzing library is a prerequisite, it must be installed first.
 1. Identify git repository.
 
     ```console
-    export GIT_ACCOUNT=senzing
+    export GIT_ACCOUNT=senzing-garage
     export GIT_REPOSITORY=serve-chat
     export GIT_ACCOUNT_DIR=~/${GIT_ACCOUNT}.git
     export GIT_REPOSITORY_DIR="${GIT_ACCOUNT_DIR}/${GIT_REPOSITORY}"
@@ -31,7 +31,23 @@ Since the Senzing library is a prerequisite, it must be installed first.
 1. Using the environment variables values just set, follow steps in
    [clone-repository](https://github.com/senzing-garage/knowledge-base/blob/main/HOWTO/clone-repository.md) to install the Git repository.
 
+## Make a test database
+
+1. Install
+   [senzing-tools](https://github.com/senzing-garage/senzing-tools#install).
+1. Create database.
+   **Note:** The database location in the following example matches what's in the `Makefile`.
+   Example:
+
+    ```console
+    export LD_LIBRARY_PATH=/opt/senzing/g2/lib/
+    senzing-tools init-database --database-url sqlite3://na:na@/tmp/sqlite/G2C.db
+
+
 ## Development cycle
+
+Instructions are at
+[Ogen QuickStart](https://ogen.dev/docs/intro/).
 
 1. Get latest version of [ogen](https://github.com/ogen-go/ogen) code generator.
    Do this frequently (i.e. daily), as code is changing constantly.
@@ -40,6 +56,13 @@ Since the Senzing library is a prerequisite, it must be installed first.
     ```console
     cd ${GIT_REPOSITORY_DIR}
     go get -d github.com/ogen-go/ogen
+    ```
+
+1. View version.
+
+    ```console
+    cd ${GIT_REPOSITORY_DIR}
+    go list -m github.com/ogen-go/ogen
     ```
 
 1. Modify
