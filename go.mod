@@ -11,17 +11,13 @@ require (
 	github.com/ogen-go/ogen v1.2.2
 	github.com/senzing-garage/go-cmdhelping v0.2.2
 	github.com/senzing-garage/go-grpcing v0.2.1
-	github.com/senzing-garage/go-helpers v0.5.2
-	github.com/senzing-garage/go-logging v1.5.0
 	github.com/senzing-garage/go-observing v0.3.2
-	github.com/senzing-garage/go-sdk-abstract-factory v0.8.1
-	github.com/senzing-garage/sz-sdk-go v0.13.5
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
-	go.opentelemetry.io/otel v1.27.0
-	go.opentelemetry.io/otel/metric v1.27.0
-	go.opentelemetry.io/otel/trace v1.27.0
+	go.opentelemetry.io/otel v1.28.0
+	go.opentelemetry.io/otel/metric v1.28.0
+	go.opentelemetry.io/otel/trace v1.28.0
 	go.uber.org/multierr v1.11.0
 	google.golang.org/grpc v1.65.0
 )
@@ -49,10 +45,7 @@ require (
 	github.com/sagikazarmark/locafero v0.6.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
-	github.com/senzing-garage/go-messaging v1.5.1 // indirect
-	github.com/senzing-garage/sz-sdk-go-core v0.7.4 // indirect
-	github.com/senzing-garage/sz-sdk-go-grpc v0.7.2 // indirect
-	github.com/senzing-garage/sz-sdk-proto v0.7.6 // indirect
+	github.com/senzing-garage/go-helpers v0.5.2 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.6.0 // indirect
