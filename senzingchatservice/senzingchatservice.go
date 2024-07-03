@@ -1,14 +1,8 @@
 package senzingchatservice
 
 import (
-	"context"
-	"sync"
-
-	"github.com/senzing-garage/go-logging/logging"
 	"github.com/senzing-garage/go-observing/observer"
-	"github.com/senzing-garage/go-sdk-abstract-factory/szfactorycreator"
-	api "github.com/senzing-garage/serve-chat/senzingchatapi"
-	"github.com/senzing-garage/sz-sdk-go/sz"
+	"github.com/senzing-garage/serve-chat/senzingchatapi"
 	"google.golang.org/grpc"
 )
 
@@ -16,27 +10,27 @@ import (
 // Types
 // ----------------------------------------------------------------------------
 
-// ChatApiServiceImpl is...
-type ChatApiServiceImpl struct {
-	api.UnimplementedHandler
-	abstractFactory                sz.SzAbstractFactory
-	abstractFactorySyncOnce        sync.Once
-	GrpcDialOptions                []grpc.DialOption
-	GrpcTarget                     string
-	logger                         logging.LoggingInterface
-	LogLevelName                   string
-	ObserverOrigin                 string
-	Observers                      []observer.Observer
-	OpenApiSpecificationSpec       []byte
-	Port                           int
-	SenzingEngineConfigurationJson string
-	SenzingModuleName              string
-	SenzingVerboseLogging          int64
-	szEngineSingleton              sz.SzEngine
-	szEngineSyncOnce               sync.Once
-	szProductSingleton             sz.SzProduct
-	szProductSyncOnce              sync.Once
-	UrlRoutePrefix                 string
+// BasicChatAPIService is...
+type BasicChatAPIService struct {
+	senzingchatapi.UnimplementedHandler
+	// abstractFactory          senzing.SzAbstractFactory
+	// abstractFactorySyncOnce  sync.Once
+	GrpcDialOptions []grpc.DialOption
+	GrpcTarget      string
+	// logger                   logging.Logging
+	LogLevelName             string
+	ObserverOrigin           string
+	Observers                []observer.Observer
+	OpenAPISpecificationSpec []byte
+	Port                     int
+	Settings                 string
+	SenzingInstanceName      string
+	SenzingVerboseLogging    int64
+	// szEngineSingleton        senzing.SzEngine
+	// szEngineSyncOnce         sync.Once
+	// szProductSingleton       senzing.SzProduct
+	// szProductSyncOnce        sync.Once
+	URLRoutePrefix string
 }
 
 // ----------------------------------------------------------------------------
@@ -46,81 +40,82 @@ type ChatApiServiceImpl struct {
 // --- Logging ----------------------------------------------------------------
 
 // Get the Logger singleton.
-func (chatApiService *ChatApiServiceImpl) getLogger() logging.LoggingInterface {
-	var err error = nil
-	if chatApiService.logger == nil {
-		loggerOptions := []interface{}{
-			&logging.OptionCallerSkip{Value: 3},
-		}
-		chatApiService.logger, err = logging.NewSenzingToolsLogger(ComponentId, IdMessages, loggerOptions...)
-		if err != nil {
-			panic(err)
-		}
-	}
-	return chatApiService.logger
-}
+// func (chatAPIService *BasicChatAPIService) getLogger() logging.Logging {
+// 	var err error
+// 	if chatAPIService.logger == nil {
+// 		loggerOptions := []interface{}{
+// 			&logging.OptionCallerSkip{Value: 3},
+// 		}
+// 		chatAPIService.logger, err = logging.NewSenzingLogger(ComponentID, IDMessages, loggerOptions...)
+// 		if err != nil {
+// 			panic(err)
+// 		}
+// 	}
+// 	return chatAPIService.logger
+// }
 
 // Log message.
-func (chatApiService *ChatApiServiceImpl) log(messageNumber int, details ...interface{}) {
-	chatApiService.getLogger().Log(messageNumber, details...)
-}
+// func (chatAPIService *BasicChatAPIService) log(messageNumber int, details ...interface{}) {
+// 	chatAPIService.getLogger().Log(messageNumber, details...)
+// }
 
 // --- Errors -----------------------------------------------------------------
 
-// Create error.
-func (chatApiService *ChatApiServiceImpl) error(messageNumber int, details ...interface{}) error {
-	return chatApiService.getLogger().NewError(messageNumber, details...)
-}
+// // Create error.
+// func (chatAPIService *BasicChatAPIService) error(messageNumber int, details ...interface{}) error {
+// 	return chatAPIService.getLogger().NewError(messageNumber, details...)
+// }
 
 // --- Services ---------------------------------------------------------------
 
-func (chatApiService *ChatApiServiceImpl) getAbstractFactory(ctx context.Context) sz.SzAbstractFactory {
-	var err error = nil
-	chatApiService.abstractFactorySyncOnce.Do(func() {
-		if len(chatApiService.GrpcTarget) == 0 {
-			chatApiService.abstractFactory, err = szfactorycreator.CreateCoreAbstractFactory(chatApiService.SenzingModuleName, chatApiService.SenzingEngineConfigurationJson, chatApiService.SenzingVerboseLogging, sz.SZ_INITIALIZE_WITH_DEFAULT_CONFIGURATION)
-			if err != nil {
-				panic(err)
-			}
-		} else {
-			grpcConnection, err := grpc.DialContext(ctx, chatApiService.GrpcTarget, chatApiService.GrpcDialOptions...)
-			if err != nil {
-				panic(err)
-			}
-			chatApiService.abstractFactory, err = szfactorycreator.CreateGrpcAbstractFactory(grpcConnection)
-			if err != nil {
-				panic(err)
-			}
-		}
-	})
-	return chatApiService.abstractFactory
-}
+// func (chatAPIService *BasicChatAPIService) getAbstractFactory(ctx context.Context) senzing.SzAbstractFactory {
+// 	_ = ctx
+// 	var err error
+// 	chatAPIService.abstractFactorySyncOnce.Do(func() {
+// 		if len(chatAPIService.GrpcTarget) == 0 {
+// 			chatAPIService.abstractFactory, err = szfactorycreator.CreateCoreAbstractFactory(chatAPIService.SenzingInstanceName, chatAPIService.Settings, chatAPIService.SenzingVerboseLogging, senzing.SzInitializeWithDefaultConfiguration)
+// 			if err != nil {
+// 				panic(err)
+// 			}
+// 		} else {
+// 			grpcConnection, err := grpc.NewClient(chatAPIService.GrpcTarget, chatAPIService.GrpcDialOptions...)
+// 			if err != nil {
+// 				panic(err)
+// 			}
+// 			chatAPIService.abstractFactory, err = szfactorycreator.CreateGrpcAbstractFactory(grpcConnection)
+// 			if err != nil {
+// 				panic(err)
+// 			}
+// 		}
+// 	})
+// 	return chatAPIService.abstractFactory
+// }
 
 // Singleton pattern for g2product.
 // See https://medium.com/golang-issue/how-singleton-pattern-works-with-golang-2fdd61cd5a7f
-func (chatApiService *ChatApiServiceImpl) getG2engine(ctx context.Context) sz.SzEngine {
-	var err error = nil
-	chatApiService.szEngineSyncOnce.Do(func() {
-		chatApiService.szEngineSingleton, err = chatApiService.getAbstractFactory(ctx).CreateSzEngine(ctx)
-		if err != nil {
-			panic(err)
-		}
-	})
-	return chatApiService.szEngineSingleton
-}
+// func (chatAPIService *BasicChatAPIService) getG2engine(ctx context.Context) senzing.SzEngine {
+// 	var err error
+// 	chatAPIService.szEngineSyncOnce.Do(func() {
+// 		chatAPIService.szEngineSingleton, err = chatAPIService.getAbstractFactory(ctx).CreateSzEngine(ctx)
+// 		if err != nil {
+// 			panic(err)
+// 		}
+// 	})
+// 	return chatAPIService.szEngineSingleton
+// }
 
 // Singleton pattern for g2product.
 // See https://medium.com/golang-issue/how-singleton-pattern-works-with-golang-2fdd61cd5a7f
-func (chatApiService *ChatApiServiceImpl) getG2product(ctx context.Context) sz.SzProduct {
-	var err error = nil
-	chatApiService.szProductSyncOnce.Do(func() {
-		chatApiService.szProductSingleton, err = chatApiService.getAbstractFactory(ctx).CreateSzProduct(ctx)
-		if err != nil {
-			panic(err)
-		}
-	})
-	return chatApiService.szProductSingleton
-}
+// func (chatAPIService *BasicChatAPIService) getG2product(ctx context.Context) senzing.SzProduct {
+// 	var err error
+// 	chatAPIService.szProductSyncOnce.Do(func() {
+// 		chatAPIService.szProductSingleton, err = chatAPIService.getAbstractFactory(ctx).CreateSzProduct(ctx)
+// 		if err != nil {
+// 			panic(err)
+// 		}
+// 	})
+// 	return chatAPIService.szProductSingleton
+// }
 
 // ----------------------------------------------------------------------------
 // Interface methods
@@ -166,7 +161,7 @@ func (chatApiService *ChatApiServiceImpl) getG2product(ctx context.Context) sz.S
 //
 // GET /pet/{petId}
 // func (chatApiService *ChatApiServiceImpl) GetPetById(ctx context.Context, params api.GetPetByIdParams) (r api.GetPetByIdRes, _ error) {
-// 	var err error = nil
+// 	var err error
 // 	response, err := chatApiService.getG2engine(ctx).GetEntityByEntityID(ctx, params.PetId)
 // 	if err != nil {
 // 		return r, err

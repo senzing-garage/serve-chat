@@ -12,6 +12,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/metric"
+	semconv "go.opentelemetry.io/otel/semconv/v1.19.0"
 	"go.opentelemetry.io/otel/trace"
 
 	"github.com/ogen-go/ogen/conv"
@@ -19,6 +20,34 @@ import (
 	"github.com/ogen-go/ogen/otelogen"
 	"github.com/ogen-go/ogen/uri"
 )
+
+// Invoker invokes operations described by OpenAPI v3 specification.
+type Invoker interface {
+	// EntityDetailsEntityDetailsGet invokes entity_details_entity_details_get operation.
+	//
+	// Retrieve entity data based on the ID of a resolved identity.
+	//
+	// GET /entity_details
+	EntityDetailsEntityDetailsGet(ctx context.Context, params EntityDetailsEntityDetailsGetParams) (EntityDetailsEntityDetailsGetRes, error)
+	// EntityHowEntityHowGet invokes entity_how_entity_how_get operation.
+	//
+	// Determines and details steps-by-step how records resolved to an ENTITY_ID.
+	//
+	// GET /entity_how
+	EntityHowEntityHowGet(ctx context.Context, params EntityHowEntityHowGetParams) (EntityHowEntityHowGetRes, error)
+	// EntityReportEntityReportGet invokes entity_report_entity_report_get operation.
+	//
+	// Return 10 entities with either matches, possible matches, or relationships.
+	//
+	// GET /entity_report
+	EntityReportEntityReportGet(ctx context.Context, params EntityReportEntityReportGetParams) (EntityReportEntityReportGetRes, error)
+	// EntitySearchEntitySearchPost invokes entity_search_entity_search_post operation.
+	//
+	// Retrieves entity data based on a user-specified set of entity attributes.
+	//
+	// POST /entity_search
+	EntitySearchEntitySearchPost(ctx context.Context, request *SearchAttributes) (EntitySearchEntitySearchPostRes, error)
+}
 
 // Client implements OAS client.
 type Client struct {
@@ -75,13 +104,14 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 // GET /entity_details
 func (c *Client) EntityDetailsEntityDetailsGet(ctx context.Context, params EntityDetailsEntityDetailsGetParams) (EntityDetailsEntityDetailsGetRes, error) {
 	res, err := c.sendEntityDetailsEntityDetailsGet(ctx, params)
-	_ = res
 	return res, err
 }
 
 func (c *Client) sendEntityDetailsEntityDetailsGet(ctx context.Context, params EntityDetailsEntityDetailsGetParams) (res EntityDetailsEntityDetailsGetRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("entity_details_entity_details_get"),
+		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/entity_details"),
 	}
 
 	// Run stopwatch.
@@ -164,13 +194,14 @@ func (c *Client) sendEntityDetailsEntityDetailsGet(ctx context.Context, params E
 // GET /entity_how
 func (c *Client) EntityHowEntityHowGet(ctx context.Context, params EntityHowEntityHowGetParams) (EntityHowEntityHowGetRes, error) {
 	res, err := c.sendEntityHowEntityHowGet(ctx, params)
-	_ = res
 	return res, err
 }
 
 func (c *Client) sendEntityHowEntityHowGet(ctx context.Context, params EntityHowEntityHowGetParams) (res EntityHowEntityHowGetRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("entity_how_entity_how_get"),
+		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/entity_how"),
 	}
 
 	// Run stopwatch.
@@ -253,13 +284,14 @@ func (c *Client) sendEntityHowEntityHowGet(ctx context.Context, params EntityHow
 // GET /entity_report
 func (c *Client) EntityReportEntityReportGet(ctx context.Context, params EntityReportEntityReportGetParams) (EntityReportEntityReportGetRes, error) {
 	res, err := c.sendEntityReportEntityReportGet(ctx, params)
-	_ = res
 	return res, err
 }
 
 func (c *Client) sendEntityReportEntityReportGet(ctx context.Context, params EntityReportEntityReportGetParams) (res EntityReportEntityReportGetRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("entity_report_entity_report_get"),
+		semconv.HTTPMethodKey.String("GET"),
+		semconv.HTTPRouteKey.String("/entity_report"),
 	}
 
 	// Run stopwatch.
@@ -342,13 +374,14 @@ func (c *Client) sendEntityReportEntityReportGet(ctx context.Context, params Ent
 // POST /entity_search
 func (c *Client) EntitySearchEntitySearchPost(ctx context.Context, request *SearchAttributes) (EntitySearchEntitySearchPostRes, error) {
 	res, err := c.sendEntitySearchEntitySearchPost(ctx, request)
-	_ = res
 	return res, err
 }
 
 func (c *Client) sendEntitySearchEntitySearchPost(ctx context.Context, request *SearchAttributes) (res EntitySearchEntitySearchPostRes, err error) {
 	otelAttrs := []attribute.KeyValue{
 		otelogen.OperationID("entity_search_entity_search_post"),
+		semconv.HTTPMethodKey.String("POST"),
+		semconv.HTTPRouteKey.String("/entity_search"),
 	}
 
 	// Run stopwatch.

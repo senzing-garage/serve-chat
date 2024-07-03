@@ -36,7 +36,6 @@ func (s *EntityDetailsEntityDetailsGetOK) Decode(d *jx.Decoder) error {
 		default:
 			return d.Skip()
 		}
-		return nil
 	}); err != nil {
 		return errors.Wrap(err, "decode EntityDetailsEntityDetailsGetOK")
 	}
@@ -81,7 +80,6 @@ func (s *EntityHowEntityHowGetOK) Decode(d *jx.Decoder) error {
 		default:
 			return d.Skip()
 		}
-		return nil
 	}); err != nil {
 		return errors.Wrap(err, "decode EntityHowEntityHowGetOK")
 	}
@@ -180,7 +178,6 @@ func (s *EntitySearchEntitySearchPostOK) Decode(d *jx.Decoder) error {
 		default:
 			return d.Skip()
 		}
-		return nil
 	}); err != nil {
 		return errors.Wrap(err, "decode EntitySearchEntitySearchPostOK")
 	}
