@@ -1,13 +1,9 @@
 # serve-chat
 
-If you are beginning your journey with
-[Senzing](https://senzing.com/),
-please start with
-[Senzing Quick Start guides](https://docs.senzing.com/quickstart/).
+If you are beginning your journey with [Senzing],
+please start with [Senzing Quick Start guides].
 
-You are in the
-[Senzing Garage](https://github.com/senzing-garage)
-where projects are "tinkered" on.
+You are in the [Senzing Garage] where projects are "tinkered" on.
 Although this GitHub repository may help you understand an approach to using Senzing,
 it's not considered to be "production ready" and is not considered to be part of the Senzing product.
 Heck, it may not even be appropriate for your application of Senzing!
@@ -24,7 +20,6 @@ the recommendation is not to use it yet.
 [![Go Report Card](https://goreportcard.com/badge/github.com/senzing-garage/serve-chat)](https://goreportcard.com/report/github.com/senzing-garage/serve-chat)
 [![License](https://img.shields.io/badge/License-Apache2-brightgreen.svg)](https://github.com/senzing-garage/serve-chat/blob/main/LICENSE)
 
-[![gosec.yaml](https://github.com/senzing-garage/serve-chat/actions/workflows/gosec.yaml/badge.svg)](https://github.com/senzing-garage/serve-chat/actions/workflows/gosec.yaml)
 [![go-test-linux.yaml](https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-linux.yaml/badge.svg)](https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-linux.yaml)
 [![go-test-darwin.yaml](https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-darwin.yaml/badge.svg)](https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-darwin.yaml)
 [![go-test-windows.yaml](https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-windows.yaml/badge.svg)](https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-windows.yaml)
@@ -73,7 +68,18 @@ the recommendation is not to use it yet.
 
 ## References
 
-1. [Development](docs/development.md)
-1. [Errors](docs/errors.md)
-1. [Examples](docs/examples.md)
-1. [Package reference](https://pkg.go.dev/github.com/senzing-garage/serve-chat)
+1. [API documentation]
+1. [Development]
+1. [Errors]
+1. [Examples]
+
+[API documentation]: https://pkg.go.dev/github.com/senzing-garage/serve-chat
+[Development]: docs/development.md
+[DockerHub]: https://hub.docker.com/r/senzing/serve-chat
+[Errors]: docs/errors.md
+[Examples]: docs/examples.md
+[Helm Chart]: https://github.com/senzing-garage/charts/tree/main/charts/serve-chat
+[main.go]: main.go
+[Senzing Garage]: https://github.com/senzing-garage-garage
+[Senzing Quick Start guides]: https://docs.senzing.com/quickstart/
+[Senzing]: https://senzing.com/
