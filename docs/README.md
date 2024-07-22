@@ -2,4 +2,4 @@
 
 Placeholder for [GitHub pages](https://pages.github.com/).
 
-See [https://hub.senzing.com/serve-chat](https://hub.senzing.com/serve-chat).
+See [https://garage.senzing.com/serve-chat](https://garage.senzing.com/serve-chat).

@@ -9,7 +9,6 @@ import (
 
 	"github.com/senzing-garage/go-cmdhelping/cmdhelper"
 	"github.com/senzing-garage/go-cmdhelping/option"
-	"github.com/senzing-garage/go-cmdhelping/option/optiontype"
 	"github.com/senzing-garage/go-cmdhelping/settings"
 	"github.com/senzing-garage/go-grpcing/grpcurl"
 	"github.com/senzing-garage/go-observing/observer"
@@ -25,31 +24,23 @@ const (
 	Use   string = "serve-chat"
 	Long  string = `
  serve-chat long description.
-	 `
+     `
 )
-
-var avoidServe = option.ContextVariable{
-	Arg:     "avoid-serving",
-	Default: option.OsLookupEnvBool("SENZING_TOOLS_AVOID_SERVING", false),
-	Envar:   "SENZING_TOOLS_AVOID_SERVING",
-	Help:    "Avoid serving.  For testing only. [%s]",
-	Type:    optiontype.Bool,
-}
 
 // ----------------------------------------------------------------------------
 // Context variables
 // ----------------------------------------------------------------------------
 
 var ContextVariablesForMultiPlatform = []option.ContextVariable{
-	avoidServe,
+	option.AvoidServe,
 	option.Configuration,
 	option.DatabaseURL,
 	option.EnableAll,
 	option.EnableSenzingChatAPI,
 	option.EnableSwaggerUI,
-	option.EngineConfigurationJSON,
+	option.EngineInstanceName,
 	option.EngineLogLevel,
-	option.EngineModuleName,
+	option.EngineSettings,
 	option.GrpcURL,
 	option.HTTPPort,
 	option.LogLevel,
@@ -61,12 +52,17 @@ var ContextVariablesForMultiPlatform = []option.ContextVariable{
 var ContextVariables = append(ContextVariablesForMultiPlatform, ContextVariablesForOsArch...)
 
 // ----------------------------------------------------------------------------
-// Private functions
+// Command
 // ----------------------------------------------------------------------------
 
-// Since init() is always invoked, define command line parameters.
-func init() {
-	cmdhelper.Init(RootCmd, ContextVariables)
+// RootCmd represents the command.
+var RootCmd = &cobra.Command{
+	Use:     Use,
+	Short:   Short,
+	Long:    Long,
+	PreRun:  PreRun,
+	RunE:    RunE,
+	Version: Version(),
 }
 
 // ----------------------------------------------------------------------------
@@ -117,7 +113,7 @@ func RunE(_ *cobra.Command, _ []string) error {
 	// Create object and Serve.
 
 	httpServer := &httpserver.BasicHTTPServer{
-		AvoidServing:          viper.GetBool(avoidServe.Arg),
+		AvoidServing:          viper.GetBool(option.AvoidServe.Arg),
 		ChatURLRoutePrefix:    "chat",
 		EnableAll:             viper.GetBool(option.EnableAll.Arg),
 		EnableSenzingChatAPI:  viper.GetBool(option.EnableSenzingChatAPI.Arg),
@@ -130,7 +126,7 @@ func RunE(_ *cobra.Command, _ []string) error {
 		OpenAPISpecification:  senzingchatservice.OpenAPISpecificationJSON,
 		ReadHeaderTimeout:     60 * time.Second,
 		Setting:               senzingEngineConfigurationJSON,
-		SenzingInstanceName:   viper.GetString(option.EngineModuleName.Arg),
+		SenzingInstanceName:   viper.GetString(option.EngineInstanceName.Arg),
 		SenzingVerboseLogging: viper.GetInt64(option.EngineLogLevel.Arg),
 		ServerAddress:         viper.GetString(option.ServerAddress.Arg),
 		ServerPort:            viper.GetInt(option.HTTPPort.Arg),
@@ -145,15 +141,10 @@ func Version() string {
 }
 
 // ----------------------------------------------------------------------------
-// Command
+// Private functions
 // ----------------------------------------------------------------------------
 
-// RootCmd represents the command.
-var RootCmd = &cobra.Command{
-	Use:     Use,
-	Short:   Short,
-	Long:    Long,
-	PreRun:  PreRun,
-	RunE:    RunE,
-	Version: Version(),
+// Since init() is always invoked, define command line parameters.
+func init() {
+	cmdhelper.Init(RootCmd, ContextVariables)
 }

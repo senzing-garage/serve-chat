@@ -2,8 +2,8 @@
 # Stages
 # -----------------------------------------------------------------------------
 
-ARG IMAGE_SENZINGAPI_RUNTIME=senzing/senzingapi-runtime:3.6.0
-ARG IMAGE_GO_BUILDER=golang:1.21.0-bullseye
+ARG IMAGE_SENZINGAPI_RUNTIME=senzing/senzingapi-runtime:3.10.1
+ARG IMAGE_GO_BUILDER=golang:1.22.3-bullseye
 ARG IMAGE_FPM_BUILDER=dockter/fpm:latest
 ARG IMAGE_FINAL=alpine
 
@@ -18,7 +18,7 @@ FROM ${IMAGE_SENZINGAPI_RUNTIME} as senzingapi_runtime
 # -----------------------------------------------------------------------------
 
 FROM ${IMAGE_GO_BUILDER} as go_builder
-ENV REFRESHED_AT=2023-08-01
+ENV REFRESHED_AT=2024-07-01
 LABEL Name="senzing/serve-chat-builder" \
       Maintainer="support@senzing.com" \
       Version="0.2.0"
@@ -57,7 +57,7 @@ RUN mkdir -p /output \
 # -----------------------------------------------------------------------------
 
 FROM ${IMAGE_FPM_BUILDER} as fpm_builder
-ENV REFRESHED_AT=2023-08-01
+ENV REFRESHED_AT=2024-07-01
 LABEL Name="senzing/serve-chat-fpm-builder" \
       Maintainer="support@senzing.com" \
       Version="0.2.0"
@@ -101,10 +101,15 @@ RUN fpm \
 # -----------------------------------------------------------------------------
 
 FROM ${IMAGE_FINAL} as final
-ENV REFRESHED_AT=2023-08-01
+ENV REFRESHED_AT=2024-07-01
 LABEL Name="senzing/serve-chat" \
       Maintainer="support@senzing.com" \
       Version="0.2.0"
+HEALTHCHECK CMD ["/app/healthcheck.sh"]
+
+# Copy local files from the Git repository.
+
+COPY ./rootfs /
 
 # Use arguments from prior stage.
 
@@ -115,4 +120,5 @@ ARG PROGRAM_NAME
 COPY --from=fpm_builder "/output/*"                                  "/output/"
 COPY --from=fpm_builder "/output/linux-amd64/${PROGRAM_NAME}"        "/output/linux-amd64/${PROGRAM_NAME}"
 
+USER 1001
 CMD ["/bin/bash"]
