@@ -91,9 +91,9 @@ type BasicChatAPIService struct {
 // 	return chatAPIService.abstractFactory
 // }
 
-// Singleton pattern for g2product.
+// Singleton pattern for szproduct.
 // See https://medium.com/golang-issue/how-singleton-pattern-works-with-golang-2fdd61cd5a7f
-// func (chatAPIService *BasicChatAPIService) getG2engine(ctx context.Context) senzing.SzEngine {
+// func (chatAPIService *BasicChatAPIService) getSzengine(ctx context.Context) senzing.SzEngine {
 // 	var err error
 // 	chatAPIService.szEngineSyncOnce.Do(func() {
 // 		chatAPIService.szEngineSingleton, err = chatAPIService.getAbstractFactory(ctx).CreateSzEngine(ctx)
@@ -104,9 +104,9 @@ type BasicChatAPIService struct {
 // 	return chatAPIService.szEngineSingleton
 // }
 
-// Singleton pattern for g2product.
+// Singleton pattern for szproduct.
 // See https://medium.com/golang-issue/how-singleton-pattern-works-with-golang-2fdd61cd5a7f
-// func (chatAPIService *BasicChatAPIService) getG2product(ctx context.Context) senzing.SzProduct {
+// func (chatAPIService *BasicChatAPIService) getSzproduct(ctx context.Context) senzing.SzProduct {
 // 	var err error
 // 	chatAPIService.szProductSyncOnce.Do(func() {
 // 		chatAPIService.szProductSingleton, err = chatAPIService.getAbstractFactory(ctx).CreateSzProduct(ctx)
@@ -128,7 +128,7 @@ type BasicChatAPIService struct {
 //
 // POST /pet
 // func (chatApiService *ChatApiServiceImpl) AddPet(ctx context.Context, req *api.Pet) (r *api.Pet, _ error) {
-// 	response, err := chatApiService.getG2product(ctx).Version(ctx)
+// 	response, err := chatApiService.getSzproduct(ctx).Version(ctx)
 // 	if err != nil {
 // 		return r, err
 // 	}
@@ -162,7 +162,7 @@ type BasicChatAPIService struct {
 // GET /pet/{petId}
 // func (chatApiService *ChatApiServiceImpl) GetPetById(ctx context.Context, params api.GetPetByIdParams) (r api.GetPetByIdRes, _ error) {
 // 	var err error
-// 	response, err := chatApiService.getG2engine(ctx).GetEntityByEntityID(ctx, params.PetId)
+// 	response, err := chatApiService.getSzengine(ctx).GetEntityByEntityID(ctx, params.PetId)
 // 	if err != nil {
 // 		return r, err
 // 	}

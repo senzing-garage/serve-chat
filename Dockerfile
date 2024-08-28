@@ -28,12 +28,12 @@ COPY . ${GOPATH}/src/serve-chat
 
 # Copy files from prior stage.
 
-COPY --from=senzingapi_runtime  "/opt/senzing/g2/lib/"   "/opt/senzing/g2/lib/"
-COPY --from=senzingapi_runtime  "/opt/senzing/g2/sdk/c/" "/opt/senzing/g2/sdk/c/"
+COPY --from=senzingapi_runtime  "/opt/senzing/er/lib/"   "/opt/senzing/er/lib/"
+COPY --from=senzingapi_runtime  "/opt/senzing/er/sdk/c/" "/opt/senzing/er/sdk/c/"
 
 # Set path to Senzing libs.
 
-ENV LD_LIBRARY_PATH=/opt/senzing/g2/lib/
+ENV LD_LIBRARY_PATH=/opt/senzing/er/lib/
 
 # Build go program.
 
@@ -43,7 +43,7 @@ RUN make build
 # Copy binaries to /output.
 
 RUN mkdir -p /output \
- && cp -R ${GOPATH}/src/serve-chat/target/*  /output/
+      && cp -R ${GOPATH}/src/serve-chat/target/*  /output/
 
 # -----------------------------------------------------------------------------
 # Stage: final
@@ -67,7 +67,7 @@ COPY --from=go_builder "/output/linux-amd64/serve-chat" "/app/serve-chat"
 
 # Runtime environment variables.
 
-ENV LD_LIBRARY_PATH=/opt/senzing/g2/lib/
+ENV LD_LIBRARY_PATH=/opt/senzing/er/lib/
 
 # Runtime execution.
 

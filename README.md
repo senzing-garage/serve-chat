@@ -75,11 +75,8 @@ the recommendation is not to use it yet.
 
 [API documentation]: https://pkg.go.dev/github.com/senzing-garage/serve-chat
 [Development]: docs/development.md
-[DockerHub]: https://hub.docker.com/r/senzing/serve-chat
 [Errors]: docs/errors.md
 [Examples]: docs/examples.md
-[Helm Chart]: https://github.com/senzing-garage/charts/tree/main/charts/serve-chat
-[main.go]: main.go
 [Senzing Garage]: https://github.com/senzing-garage-garage
 [Senzing Quick Start guides]: https://docs.senzing.com/quickstart/
 [Senzing]: https://senzing.com/

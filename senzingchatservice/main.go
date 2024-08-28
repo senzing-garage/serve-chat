@@ -30,7 +30,7 @@ const Prefix = "serve-chat.chatapiservice."
 // Variables
 // ----------------------------------------------------------------------------
 
-// Message templates for g2config implementations.
+// Message templates for szconfig implementations.
 var IDMessages = map[int]string{
 	0001: "Example Trace log.",
 	1000: "Example Debug log.",
