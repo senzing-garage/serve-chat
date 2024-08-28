@@ -118,24 +118,15 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
         ```
 
-1. Run without a build.
-   Example:
+    1. Run without a build.
 
-    ```console
-    cd ${GIT_REPOSITORY_DIR}
-    make run
+        ```console
+        cd ${GIT_REPOSITORY_DIR}
+        make run
 
-    ```
+        ```
 
 1. Open a web browser at [localhost:8260].
-
-1. Run the binary.
-   Example:
-
-    ```console
-    ${GIT_REPOSITORY_DIR}/target/linux/serve-chat
-
-    ```
 
 1. Clean up.
    Example:
