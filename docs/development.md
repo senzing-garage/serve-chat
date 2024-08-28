@@ -94,6 +94,30 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
 ## Run
 
+1. Run program.
+   Examples:
+
+    1. Linux
+
+        ```console
+        ${GIT_REPOSITORY_DIR}/target/linux-amd64/template-go
+
+        ```
+
+    1. macOS
+
+        ```console
+        ${GIT_REPOSITORY_DIR}/target/darwin-amd64/template-go
+
+        ```
+
+    1. Windows
+
+        ```console
+        ${GIT_REPOSITORY_DIR}/target/windows-amd64/template-go
+
+        ```
+
 1. Run without a build.
    Example:
 
