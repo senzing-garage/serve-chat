@@ -16,13 +16,17 @@ the recommendation is not to use it yet.
 
 ## Synopsis
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/senzing-garage/serve-chat.svg)](https://pkg.go.dev/github.com/senzing-garage/serve-chat)
-[![Go Report Card](https://goreportcard.com/badge/github.com/senzing-garage/serve-chat)](https://goreportcard.com/report/github.com/senzing-garage/serve-chat)
-[![License](https://img.shields.io/badge/License-Apache2-brightgreen.svg)](https://github.com/senzing-garage/serve-chat/blob/main/LICENSE)
+The serve-chat repository serves as a starting point for new repositories hosting Go code.
+It also shows best practices that can be retro-fitted into existing repositories hosting Go code.
 
-[![go-test-linux.yaml](https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-linux.yaml/badge.svg)](https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-linux.yaml)
-[![go-test-darwin.yaml](https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-darwin.yaml/badge.svg)](https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-darwin.yaml)
-[![go-test-windows.yaml](https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-windows.yaml/badge.svg)](https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-windows.yaml)
+[![Go Reference Badge]][Package reference]
+[![Go Report Card Badge]][Go Report Card]
+[![License Badge]][License]
+[![go-test-linux.yaml Badge]][go-test-linux.yaml]
+[![go-test-darwin.yaml Badge]][go-test-darwin.yaml]
+[![go-test-windows.yaml Badge]][go-test-windows.yaml]
+
+[![golangci-lint.yaml Badge]][golangci-lint.yaml]
 
 ## Overview
 
@@ -75,11 +79,22 @@ the recommendation is not to use it yet.
 
 [API documentation]: https://pkg.go.dev/github.com/senzing-garage/serve-chat
 [Development]: docs/development.md
-[DockerHub]: https://hub.docker.com/r/senzing/serve-chat
 [Errors]: docs/errors.md
 [Examples]: docs/examples.md
-[Helm Chart]: https://github.com/senzing-garage/charts/tree/main/charts/serve-chat
-[main.go]: main.go
-[Senzing Garage]: https://github.com/senzing-garage-garage
+[Go Reference Badge]: https://pkg.go.dev/badge/github.com/senzing-garage/serve-chat.svg
+[Go Report Card Badge]: https://goreportcard.com/badge/github.com/senzing-garage/serve-chat
+[Go Report Card]: https://goreportcard.com/report/github.com/senzing-garage/serve-chat
+[go-test-darwin.yaml Badge]: https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-darwin.yaml/badge.svg
+[go-test-darwin.yaml]: https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-darwin.yaml
+[go-test-linux.yaml Badge]: https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-linux.yaml/badge.svg
+[go-test-linux.yaml]: https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-linux.yaml
+[go-test-windows.yaml Badge]: https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-windows.yaml/badge.svg
+[go-test-windows.yaml]: https://github.com/senzing-garage/serve-chat/actions/workflows/go-test-windows.yaml
+[golangci-lint.yaml Badge]: https://github.com/senzing-garage/serve-chat/actions/workflows/golangci-lint.yaml/badge.svg
+[golangci-lint.yaml]: https://github.com/senzing-garage/serve-chat/actions/workflows/golangci-lint.yaml
+[License Badge]: https://img.shields.io/badge/License-Apache2-brightgreen.svg
+[License]: https://github.com/senzing-garage/serve-chat/blob/main/LICENSE
+[Package reference]: https://pkg.go.dev/github.com/senzing-garage/serve-chat
+[Senzing Garage]: https://github.com/senzing-garage
 [Senzing Quick Start guides]: https://docs.senzing.com/quickstart/
 [Senzing]: https://senzing.com/
