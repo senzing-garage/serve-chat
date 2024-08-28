@@ -127,7 +127,7 @@ Since the Senzing library is a prerequisite, it must be installed first.
 
     ```
 
-1. Open a web browser at [localhost:8262](http://localhost:8262).
+1. Open a web browser at [localhost:8260].
 
 1. Run the binary.
    Example:
@@ -306,9 +306,9 @@ Example:
 ### Generate files
 
 Instructions are at
-[Ogen QuickStart](https://ogen.dev/docs/intro/).
+[Ogen QuickStart].
 
-1. Get latest version of [ogen](https://github.com/ogen-go/ogen) code generator.
+1. Get latest version of [ogen] code generator.
    Do this frequently (i.e. daily), as code is changing constantly.
    Example:
 
@@ -324,11 +324,9 @@ Instructions are at
     go list -m github.com/ogen-go/ogen
     ```
 
-1. Modify
-   [openapi.json](../senzingchatservice/openapi.json).
+1. Modify [openapi.json].
    **Note:** It must be `json`.  For some reason `yaml` doesn't work.
-1. Generate code from
-   [openapi.json](../senzingchatservice/openapi.json).
+1. Generate code from [openapi.json].
    Example:
 
     ```console
@@ -337,10 +335,7 @@ Instructions are at
 
     ```
 
-1. Modify
-   [senzingchatservice.go](../senzingchatservice/senzingchatservice.go)
-   implementing method invocations seen in
-   [oas_unimplemented_gen.go](../senzingchatapi/oas_unimplemented_gen.go)
+1. Modify [senzingchatservice.go] implementing method invocations seen in [oas_unimplemented_gen.go].
 
 1. Create clean SQLite test database.
    Example:
@@ -369,5 +364,11 @@ Instructions are at
 [go]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/go.md
 [How to Install Senzing for Go Development]: https://github.com/senzing-garage/knowledge-base/blob/main/HOWTO/install-senzing-for-go-development.md
 [localhost:6060]: http://localhost:6060/pkg/github.com/senzing-garage/serve-chat/
+[localhost:8260]: http://localhost:8260
 [make]: https://github.com/senzing-garage/knowledge-base/blob/main/WHATIS/make.md
+[oas_unimplemented_gen.go]: ../senzingchatapi/oas_unimplemented_gen.go
+[Ogen QuickStart]: https://ogen.dev/docs/intro/
+[ogen]: https://github.com/ogen-go/ogen
+[openapi.json]: ../senzingchatservice/openapi.json
+[senzingchatservice.go]: ../senzingchatservice/senzingchatservice.go
 [testcoverage.yaml]: ../.github/coverage/testcoverage.yaml
