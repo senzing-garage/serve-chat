@@ -1,5 +1,8 @@
 # serve-chat
 
-Placeholder for [GitHub pages](https://pages.github.com/).
+Placeholder for [GitHub pages].
 
-See [https://garage.senzing.com/serve-chat](https://garage.senzing.com/serve-chat).
+See [GitHub page].
+
+[GitHub page]: https://garage.senzing.com/serve-chat
+[GitHub pages]: https://pages.github.com/
