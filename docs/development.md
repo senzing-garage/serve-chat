@@ -211,12 +211,14 @@ Example:
     ```console
     docker run \
       --env SENZING_TOOLS_DATABASE_URL=sqlite3://na:na@/tmp/sqlite/G2C.db \
-      --publish 8262:8262 \
+      --publish 8260:8260 \
       --rm \
       --volume /tmp/sqlite:/tmp/sqlite \
       senzing/serve-chat --enable-all
 
     ```
+
+1. Open a web browser at [localhost:8260].
 
 1. **Optional:** Test using `docker-compose`.
    Example:
