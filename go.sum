@@ -69,8 +69,8 @@ github.com/senzing-garage/go-grpcing v0.2.1 h1:bkFx+hUqiJNtoWdU8p6zt5RHjKHr9e0Wr
 github.com/senzing-garage/go-grpcing v0.2.1/go.mod h1:1eP8tLhg3IpaAqL+r8DZh5YcDjcy3kwHN4kdFUwkhjY=
 github.com/senzing-garage/go-helpers v0.6.0 h1:JAVh3TkJLgYQ9yrXlHsNMrhmteX7iSdhVx+c97622Yw=
 github.com/senzing-garage/go-helpers v0.6.0/go.mod h1:R+JqbeBYB83nBSMmAm8izJhqPY9/4LgjSHsFFgRXP94=
-github.com/senzing-garage/go-observing v0.3.2 h1:jXW5u656aZywe/UEUi7ga7nieBSW4CUO8YKvpNNAFMQ=
-github.com/senzing-garage/go-observing v0.3.2/go.mod h1:5yHCwaaIrwX81JOghAL/1Q1V8eF7SQhyBBdhTb7+rgY=
+github.com/senzing-garage/go-observing v0.3.3 h1:AhQYgOG012sDZtWXYcXVAaS5qEoDjlWmPYJDVCUZ/g0=
+github.com/senzing-garage/go-observing v0.3.3/go.mod h1:qFUi5Dwb6vmd7izTZGjGbWKUGRHzWzsgbsX3oNSD198=
 github.com/sourcegraph/conc v0.3.0 h1:OQTbbt6P72L20UqAkXXuLOj79LfEanQ+YQFNpLA9ySo=
 github.com/sourcegraph/conc v0.3.0/go.mod h1:Sdozi7LEKbFPqYX2/J+iBAM6HpqSLTASQIKqDmF7Mt0=
 github.com/spf13/afero v1.11.0 h1:WJQKhtpdm3v2IzqG8VMqrr6Rf3UYpEF239Jy9wNepM8=

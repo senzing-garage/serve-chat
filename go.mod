@@ -11,7 +11,7 @@ require (
 	github.com/ogen-go/ogen v1.3.0
 	github.com/senzing-garage/go-cmdhelping v0.3.0
 	github.com/senzing-garage/go-grpcing v0.2.1
-	github.com/senzing-garage/go-observing v0.3.2
+	github.com/senzing-garage/go-observing v0.3.3
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
