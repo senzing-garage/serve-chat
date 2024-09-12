@@ -1,8 +1,7 @@
 module github.com/senzing-garage/serve-chat
 
 go 1.21.0
-
-toolchain go1.22.1
+toolchain go1.22.5
 
 require (
 	github.com/flowchartsman/swaggerui v0.0.0-20221017034628-909ed4f3701b
@@ -15,9 +14,9 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
-	go.opentelemetry.io/otel v1.29.0
-	go.opentelemetry.io/otel/metric v1.29.0
-	go.opentelemetry.io/otel/trace v1.29.0
+	go.opentelemetry.io/otel v1.30.0
+	go.opentelemetry.io/otel/metric v1.30.0
+	go.opentelemetry.io/otel/trace v1.30.0
 	go.uber.org/multierr v1.11.0
 	google.golang.org/grpc v1.66.2
 )
