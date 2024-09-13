@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [0.3.1] - 2024-09-13
+
+### Changed in 0.3.1
+
+- Updated dependencies
+
 ## [0.3.0] - 2024-08-28
+
+### Changed in 0.3.0
 
 - Change from `g2` to `sz`/`er`
 
