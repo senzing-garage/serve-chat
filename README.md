@@ -77,7 +77,7 @@ It also shows best practices that can be retro-fitted into existing repositories
 1. [Errors]
 1. [Examples]
 
-[SDK documentation]: https://pkg.go.dev/github.com/senzing-garage/template-go
+[SDK documentation]: https://pkg.go.dev/github.com/senzing-garage/serve-chat
 [Development]: docs/development.md
 [Errors]: docs/errors.md
 [Examples]: docs/examples.md
