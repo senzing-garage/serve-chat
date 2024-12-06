@@ -72,12 +72,12 @@ It also shows best practices that can be retro-fitted into existing repositories
 
 ## References
 
-1. [API documentation]
+1. [SDK documentation]
 1. [Development]
 1. [Errors]
 1. [Examples]
 
-[API documentation]: https://pkg.go.dev/github.com/senzing-garage/serve-chat
+[SDK documentation]: https://pkg.go.dev/github.com/senzing-garage/serve-chat
 [Development]: docs/development.md
 [Errors]: docs/errors.md
 [Examples]: docs/examples.md
