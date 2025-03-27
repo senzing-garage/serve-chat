@@ -69,7 +69,7 @@ COPY ./rootfs /
 
 # Copy files from prior stage.
 
-COPY --from=builder /output/linux-amd64/serve-chat /app/serve-chat
+COPY --from=builder /output/linux/serve-chat /app/serve-chat
 
 # Run as non-root container
 
