@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"html/template"
 	"io/fs"
-	"log"
 	"net/http"
 	"time"
 
@@ -282,7 +281,7 @@ func (httpServer *BasicHTTPServer) getSenzingChatMux(ctx context.Context) *senzi
 
 	srv, err := senzingchatapi.NewServer(service, httpServer.ServerOptions...)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	return srv
