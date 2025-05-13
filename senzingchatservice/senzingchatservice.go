@@ -73,7 +73,11 @@ type BasicChatAPIService struct {
 // 	var err error
 // 	chatAPIService.abstractFactorySyncOnce.Do(func() {
 // 		if len(chatAPIService.GrpcTarget) == 0 {
-// 			chatAPIService.abstractFactory, err = szfactorycreator.CreateCoreAbstractFactory(chatAPIService.SenzingInstanceName, chatAPIService.Settings, chatAPIService.SenzingVerboseLogging, senzing.SzInitializeWithDefaultConfiguration)
+// 			chatAPIService.abstractFactory, err = szfactorycreator.CreateCoreAbstractFactory(
+//               chatAPIService.SenzingInstanceName,
+//               chatAPIService.Settings,
+//               chatAPIService.SenzingVerboseLogging,
+//               senzing.SzInitializeWithDefaultConfiguration)
 // 			if err != nil {
 // 				panic(err)
 // 			}
@@ -160,7 +164,8 @@ type BasicChatAPIService struct {
 // Returns a single pet.
 //
 // GET /pet/{petId}
-// func (chatApiService *ChatApiServiceImpl) GetPetById(ctx context.Context, params api.GetPetByIdParams) (r api.GetPetByIdRes, _ error) {
+// func (chatApiService *ChatApiServiceImpl) GetPetById(ctx context.Context, params api.GetPetByIdParams)
+//           (r api.GetPetByIdRes, _ error) {
 // 	var err error
 // 	response, err := chatApiService.getSzengine(ctx).GetEntityByEntityID(ctx, params.PetId)
 // 	if err != nil {

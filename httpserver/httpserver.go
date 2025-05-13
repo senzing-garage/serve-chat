@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/flowchartsman/swaggerui"
+	"github.com/senzing-garage/go-helpers/wraperror"
 	"github.com/senzing-garage/go-observing/observer"
 	"github.com/senzing-garage/serve-chat/senzingchatapi"
 	"github.com/senzing-garage/serve-chat/senzingchatservice"
@@ -26,7 +27,7 @@ import (
 // BasicHTTPServer is the default implementation of the HttpServer interface.
 type BasicHTTPServer struct {
 	AvoidServing          bool
-	ChatURLRoutePrefix    string // FIXME: Only works with "chat"
+	ChatURLRoutePrefix    string // IMPROVE: Only works with "chat"
 	EnableAll             bool
 	EnableSenzingChatAPI  bool
 	EnableSwaggerUI       bool
@@ -43,7 +44,7 @@ type BasicHTTPServer struct {
 	ServerAddress         string
 	ServerOptions         []senzingchatapi.ServerOption
 	ServerPort            int
-	SwaggerURLRoutePrefix string // FIXME: Only works with "swagger"
+	SwaggerURLRoutePrefix string // IMPROVE: Only works with "swagger"
 }
 
 type TemplateVariables struct {
@@ -64,69 +65,200 @@ type TemplateVariables struct {
 var static embed.FS
 
 // ----------------------------------------------------------------------------
-// Internal methods
+// Interface methods
 // ----------------------------------------------------------------------------
 
-func (httpServer *BasicHTTPServer) getServerStatus(up bool) string {
+/*
+The Serve method simply prints the 'Something' value in the type-struct.
+
+Input
+  - ctx: A context to control lifecycle.
+
+Output
+  - Nothing is returned, except for an error.  However, something is printed.
+    See the example output.
+*/
+
+func (httpServer *BasicHTTPServer) Serve(ctx context.Context) error {
+	rootMux := http.NewServeMux()
+
+	var userMessages []string
+
+	// Add to root Mux.
+
+	userMessages = append(userMessages, httpServer.addChatToMux(ctx, rootMux)...)
+	userMessages = append(userMessages, httpServer.addSwagerToMux(ctx, rootMux)...)
+
+	// Add route to template pages.
+
+	rootMux.HandleFunc("/site/", httpServer.siteFunc)
+	userMessages = append(
+		userMessages,
+		fmt.Sprintf("Serving Console at          http://localhost:%d\n", httpServer.ServerPort),
+	)
+
+	// Add route to static files.
+
+	rootDir, err := fs.Sub(static, "static/root")
+	if err != nil {
+		panic(err)
+	}
+
+	rootMux.Handle("/", http.StripPrefix("/", http.FileServer(http.FS(rootDir))))
+
+	// Start service.
+
+	listenOnAddress := fmt.Sprintf("%s:%v", httpServer.ServerAddress, httpServer.ServerPort)
+	userMessages = append(userMessages,
+		fmt.Sprintf("Starting server on interface:port '%s'...", listenOnAddress))
+
+	for userMessage := range userMessages {
+		outputln(userMessage)
+	}
+
+	server := http.Server{
+		ReadHeaderTimeout: httpServer.ReadHeaderTimeout,
+		Addr:              listenOnAddress,
+		Handler:           rootMux,
+	}
+
+	if !httpServer.AvoidServing {
+		err = server.ListenAndServe()
+
+		return wraperror.Errorf(err, "httpserver.Serve error: %w", err)
+	}
+
+	return nil
+}
+
+// ----------------------------------------------------------------------------
+// Private methods
+// ----------------------------------------------------------------------------
+
+func (httpServer *BasicHTTPServer) addChatToMux(
+	ctx context.Context,
+	rootMux *http.ServeMux,
+) []string {
+	var result []string
+
+	if httpServer.EnableAll || httpServer.EnableSenzingChatAPI {
+		senzingAPIMux := httpServer.getSenzingChatMux(ctx)
+		rootMux.Handle(fmt.Sprintf("/%s/", httpServer.ChatURLRoutePrefix), http.StripPrefix("/chat", senzingAPIMux))
+		result = append(result,
+			fmt.Sprintf(
+				"Serving Senzing Chat API at http://localhost:%d/%s",
+				httpServer.ServerPort,
+				httpServer.ChatURLRoutePrefix))
+	}
+
+	return result
+}
+
+func (httpServer *BasicHTTPServer) addSwagerToMux(
+	ctx context.Context,
+	rootMux *http.ServeMux,
+) []string {
+	var result []string
+
+	if httpServer.EnableAll || httpServer.EnableSwaggerUI {
+		swaggerUIMux := httpServer.getSwaggerUIMux(ctx)
+		rootMux.Handle(
+			fmt.Sprintf("/%s/", httpServer.SwaggerURLRoutePrefix),
+			http.StripPrefix("/swagger", swaggerUIMux),
+		)
+
+		result = append(result,
+			fmt.Sprintf(
+				"Serving SwaggerUI at        http://localhost:%d/%s",
+				httpServer.ServerPort,
+				httpServer.SwaggerURLRoutePrefix))
+	}
+
+	return result
+}
+
+func (httpServer *BasicHTTPServer) getServerStatus(active bool) string {
 	result := "red"
 	if httpServer.EnableAll {
 		result = "green"
 	}
-	if up {
+
+	if active {
 		result = "green"
 	}
+
 	return result
 }
 
-func (httpServer *BasicHTTPServer) getServerURL(up bool, url string) string {
+func (httpServer *BasicHTTPServer) getServerURL(active bool, url string) string {
 	result := ""
 	if httpServer.EnableAll {
 		result = url
 	}
-	if up {
+
+	if active {
 		result = url
 	}
+
 	return result
 }
 
 func (httpServer *BasicHTTPServer) openAPIFunc(ctx context.Context, openAPISpecification []byte) http.HandlerFunc {
 	_ = ctx
 	_ = openAPISpecification
-	return func(w http.ResponseWriter, r *http.Request) {
+
+	return func(writer http.ResponseWriter, request *http.Request) {
 		var bytesBuffer bytes.Buffer
 		bufioWriter := bufio.NewWriter(&bytesBuffer)
-		openAPISpecificationTemplate, err := template.New("OpenApiTemplate").Parse(string(httpServer.OpenAPISpecification))
+
+		openAPISpecificationTemplate, err := template.New("OpenApiTemplate").
+			Parse(string(httpServer.OpenAPISpecification))
 		if err != nil {
 			panic(err)
 		}
+
 		templateVariables := TemplateVariables{
-			RequestHost: string(r.Host),
+			RequestHost: request.Host,
 		}
+
 		err = openAPISpecificationTemplate.Execute(bufioWriter, templateVariables)
 		if err != nil {
 			panic(err)
 		}
-		_, err = w.Write(bytesBuffer.Bytes())
+
+		_, err = writer.Write(bytesBuffer.Bytes())
 		if err != nil {
 			panic(err)
 		}
 	}
 }
-func (httpServer *BasicHTTPServer) populateStaticTemplate(responseWriter http.ResponseWriter, request *http.Request, filepath string, templateVariables TemplateVariables) {
+
+func (httpServer *BasicHTTPServer) populateStaticTemplate(
+	responseWriter http.ResponseWriter,
+	request *http.Request,
+	filepath string,
+	templateVariables TemplateVariables,
+) {
 	_ = request
+
 	templateBytes, err := static.ReadFile(filepath)
 	if err != nil {
-		http.Error(responseWriter, http.StatusText(500), 500)
+		http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+
 		return
 	}
+
 	templateParsed, err := template.New("HtmlTemplate").Parse(string(templateBytes))
 	if err != nil {
-		http.Error(responseWriter, http.StatusText(500), 500)
+		http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+
 		return
 	}
+
 	err = templateParsed.Execute(responseWriter, templateVariables)
 	if err != nil {
-		http.Error(responseWriter, http.StatusText(500), 500)
+		http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+
 		return
 	}
 }
@@ -147,10 +279,12 @@ func (httpServer *BasicHTTPServer) getSenzingChatMux(ctx context.Context) *senzi
 		URLRoutePrefix:           httpServer.ChatURLRoutePrefix,
 		OpenAPISpecificationSpec: httpServer.OpenAPISpecification,
 	}
+
 	srv, err := senzingchatapi.NewServer(service, httpServer.ServerOptions...)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	return srv
 }
 
@@ -160,86 +294,34 @@ func (httpServer *BasicHTTPServer) getSwaggerUIMux(ctx context.Context) *http.Se
 	submux := http.NewServeMux()
 	submux.HandleFunc("/", swaggerFunc)
 	submux.HandleFunc("/swagger_spec", httpServer.openAPIFunc(ctx, httpServer.OpenAPISpecification))
+
 	return submux
 }
 
 // --- Http Funcs -------------------------------------------------------------
 
-func (httpServer *BasicHTTPServer) siteFunc(w http.ResponseWriter, r *http.Request) {
+func (httpServer *BasicHTTPServer) siteFunc(writer http.ResponseWriter, request *http.Request) {
 	templateVariables := TemplateVariables{
-		BasicHTTPServer:  *httpServer,
-		HTMLTitle:        "serve-chat",
-		ChatServerURL:    httpServer.getServerURL(httpServer.EnableSenzingChatAPI, fmt.Sprintf("http://%s/chat", r.Host)),
+		BasicHTTPServer: *httpServer,
+		HTMLTitle:       "serve-chat",
+		ChatServerURL: httpServer.getServerURL(
+			httpServer.EnableSenzingChatAPI,
+			fmt.Sprintf("http://%s/chat", request.Host),
+		),
 		ChatServerStatus: httpServer.getServerStatus(httpServer.EnableSenzingChatAPI),
-		SwaggerURL:       httpServer.getServerURL(httpServer.EnableSwaggerUI, fmt.Sprintf("http://%s/swagger", r.Host)),
-		SwaggerStatus:    httpServer.getServerStatus(httpServer.EnableSwaggerUI),
+		SwaggerURL: httpServer.getServerURL(
+			httpServer.EnableSwaggerUI,
+			fmt.Sprintf("http://%s/swagger", request.Host),
+		),
+		SwaggerStatus: httpServer.getServerStatus(httpServer.EnableSwaggerUI),
 	}
-	w.Header().Set("Content-Type", "text/html")
-	filePath := fmt.Sprintf("static/templates%s", r.RequestURI)
-	httpServer.populateStaticTemplate(w, r, filePath, templateVariables)
+
+	writer.Header().Set("Content-Type", "text/html")
+
+	filePath := "static/templates" + request.RequestURI
+	httpServer.populateStaticTemplate(writer, request, filePath, templateVariables)
 }
 
-// ----------------------------------------------------------------------------
-// Interface methods
-// ----------------------------------------------------------------------------
-
-/*
-The Serve method simply prints the 'Something' value in the type-struct.
-
-Input
-  - ctx: A context to control lifecycle.
-
-Output
-  - Nothing is returned, except for an error.  However, something is printed.
-    See the example output.
-*/
-
-func (httpServer *BasicHTTPServer) Serve(ctx context.Context) error {
-	rootMux := http.NewServeMux()
-	var userMessage = ""
-
-	// Enable Senzing HTTP Chat API.
-
-	if httpServer.EnableAll || httpServer.EnableSenzingChatAPI {
-		senzingAPIMux := httpServer.getSenzingChatMux(ctx)
-		rootMux.Handle(fmt.Sprintf("/%s/", httpServer.ChatURLRoutePrefix), http.StripPrefix("/chat", senzingAPIMux))
-		userMessage = fmt.Sprintf("%sServing Senzing Chat API at http://localhost:%d/%s\n", userMessage, httpServer.ServerPort, httpServer.ChatURLRoutePrefix)
-	}
-
-	// Enable SwaggerUI.
-
-	if httpServer.EnableAll || httpServer.EnableSwaggerUI {
-		swaggerUIMux := httpServer.getSwaggerUIMux(ctx)
-		rootMux.Handle(fmt.Sprintf("/%s/", httpServer.SwaggerURLRoutePrefix), http.StripPrefix("/swagger", swaggerUIMux))
-		userMessage = fmt.Sprintf("%sServing SwaggerUI at        http://localhost:%d/%s\n", userMessage, httpServer.ServerPort, httpServer.SwaggerURLRoutePrefix)
-	}
-
-	// Add route to template pages.
-
-	rootMux.HandleFunc("/site/", httpServer.siteFunc)
-	userMessage = fmt.Sprintf("%sServing Console at          http://localhost:%d\n", userMessage, httpServer.ServerPort)
-
-	// Add route to static files.
-
-	rootDir, err := fs.Sub(static, "static/root")
-	if err != nil {
-		panic(err)
-	}
-	rootMux.Handle("/", http.StripPrefix("/", http.FileServer(http.FS(rootDir))))
-
-	// Start service.
-
-	listenOnAddress := fmt.Sprintf("%s:%v", httpServer.ServerAddress, httpServer.ServerPort)
-	userMessage = fmt.Sprintf("%sStarting server on interface:port '%s'...\n", userMessage, listenOnAddress)
-	fmt.Println(userMessage)
-	server := http.Server{
-		ReadHeaderTimeout: httpServer.ReadHeaderTimeout,
-		Addr:              listenOnAddress,
-		Handler:           rootMux,
-	}
-
-	if !httpServer.AvoidServing {
-		return server.ListenAndServe()
-	}
-	return nil
+func outputln(message ...any) {
+	fmt.Println(message...) //nolint
 }

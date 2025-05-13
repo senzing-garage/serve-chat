@@ -1,4 +1,4 @@
-package senzingchatservice
+package senzingchatservice_test
 
 import (
 	"testing"
@@ -33,11 +33,3 @@ var (
 func TestBasicChatAPIService_AddPet(test *testing.T) {
 	_ = test
 }
-
-// ----------------------------------------------------------------------------
-// Examples for godoc documentation
-// ----------------------------------------------------------------------------
-
-// func ExampleBasicChatAPIService_AddPet() {
-
-// }
