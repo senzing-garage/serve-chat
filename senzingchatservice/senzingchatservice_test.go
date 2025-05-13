@@ -31,5 +31,5 @@ var (
 // ----------------------------------------------------------------------------
 
 func TestBasicChatAPIService_AddPet(test *testing.T) {
-	_ = test
+	test.Parallel()
 }

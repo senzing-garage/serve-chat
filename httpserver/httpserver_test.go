@@ -11,7 +11,7 @@ import (
 // ----------------------------------------------------------------------------
 
 func TestHTTPServerImpl_Serve(test *testing.T) {
-	_ = test
+	test.Parallel()
 
 	_ = httpserver.BasicHTTPServer{}
 }

@@ -15,6 +15,7 @@ import (
 // ----------------------------------------------------------------------------
 
 func Test_docsAction(test *testing.T) {
+	test.Parallel()
 	var buffer bytes.Buffer
 	err := cmd.DocsAction(&buffer, "C:\\Temp")
 	require.NoError(test, err)
