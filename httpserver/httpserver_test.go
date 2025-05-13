@@ -1,7 +1,9 @@
-package httpserver
+package httpserver_test
 
 import (
 	"testing"
+
+	"github.com/senzing-garage/serve-chat/httpserver"
 )
 
 // ----------------------------------------------------------------------------
@@ -9,11 +11,7 @@ import (
 // ----------------------------------------------------------------------------
 
 func TestHTTPServerImpl_Serve(test *testing.T) {
-	_ = test
+	test.Parallel()
+
+	_ = httpserver.BasicHTTPServer{}
 }
-
-// ----------------------------------------------------------------------------
-// Examples for godoc documentation
-// ----------------------------------------------------------------------------
-
-func ExampleBasicHTTPServer_Serve() {}

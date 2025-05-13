@@ -11,6 +11,7 @@ import (
 	"github.com/senzing-garage/go-cmdhelping/option"
 	"github.com/senzing-garage/go-cmdhelping/settings"
 	"github.com/senzing-garage/go-grpcing/grpcurl"
+	"github.com/senzing-garage/go-helpers/wraperror"
 	"github.com/senzing-garage/go-observing/observer"
 	"github.com/senzing-garage/serve-chat/httpserver"
 	"github.com/senzing-garage/serve-chat/senzingchatservice"
@@ -20,11 +21,12 @@ import (
 )
 
 const (
-	Short string = "serve-chat short description"
-	Use   string = "serve-chat"
-	Long  string = `
+	Long string = `
  serve-chat long description.
      `
+	ReadHeaderTimeoutInSeconds        = 60
+	Short                      string = "serve-chat short description"
+	Use                        string = "serve-chat"
 )
 
 // ----------------------------------------------------------------------------
@@ -78,19 +80,20 @@ func Execute() {
 	}
 }
 
-// Used in construction of cobra.Command
+// Used in construction of cobra.Command.
 func PreRun(cobraCommand *cobra.Command, args []string) {
 	cmdhelper.PreRun(cobraCommand, args, Use, ContextVariables)
 }
 
-// Used in construction of cobra.Command
+// Used in construction of cobra.Command.
 func RunE(_ *cobra.Command, _ []string) error {
 	var err error
+
 	ctx := context.Background()
 
 	senzingEngineConfigurationJSON, err := settings.BuildAndVerifySettings(ctx, viper.GetViper())
 	if err != nil {
-		return err
+		return wraperror.Errorf(err, "cmd.RunE.BuildAndVerifySettings error: %w", err)
 	}
 
 	// Determine if gRPC is being used.
@@ -98,10 +101,11 @@ func RunE(_ *cobra.Command, _ []string) error {
 	grpcURL := viper.GetString(option.GrpcURL.Arg)
 	grpcTarget := ""
 	grpcDialOptions := []grpc.DialOption{}
+
 	if len(grpcURL) > 0 {
 		grpcTarget, grpcDialOptions, err = grpcurl.Parse(ctx, grpcURL)
 		if err != nil {
-			return err
+			return wraperror.Errorf(err, "cmd.RunE.Parse error: %w", err)
 		}
 	}
 
@@ -124,7 +128,7 @@ func RunE(_ *cobra.Command, _ []string) error {
 		ObserverOrigin:        viper.GetString(option.ObserverOrigin.Arg),
 		Observers:             observers,
 		OpenAPISpecification:  senzingchatservice.OpenAPISpecificationJSON,
-		ReadHeaderTimeout:     60 * time.Second,
+		ReadHeaderTimeout:     ReadHeaderTimeoutInSeconds * time.Second,
 		Setting:               senzingEngineConfigurationJSON,
 		SenzingInstanceName:   viper.GetString(option.EngineInstanceName.Arg),
 		SenzingVerboseLogging: viper.GetInt64(option.EngineLogLevel.Arg),
@@ -132,10 +136,13 @@ func RunE(_ *cobra.Command, _ []string) error {
 		ServerPort:            viper.GetInt(option.HTTPPort.Arg),
 		SwaggerURLRoutePrefix: "swagger",
 	}
-	return httpServer.Serve(ctx)
+
+	err = httpServer.Serve(ctx)
+
+	return wraperror.Errorf(err, "cmd.RunE error: %w", err)
 }
 
-// Used in construction of cobra.Command
+// Used in construction of cobra.Command.
 func Version() string {
 	return cmdhelper.Version(githubVersion, githubIteration)
 }
