@@ -31,8 +31,6 @@ and this project adheres to [Semantic Versioning].
 
 - Change from `g2` to `sz`/`er`
 
-### Changed in 0.3.0
-
 ## [0.2.2] - 2024-07-03
 
 ### Changed in 0.2.2

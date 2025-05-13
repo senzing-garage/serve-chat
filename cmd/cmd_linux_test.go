@@ -15,6 +15,6 @@ import (
 
 func Test_docsAction(test *testing.T) {
 	var buffer bytes.Buffer
-	err := docsAction(&buffer, "/tmp")
+	err := DocsAction(&buffer, "/tmp")
 	require.NoError(test, err)
 }
