@@ -9,7 +9,7 @@ require (
 	github.com/ogen-go/ogen v1.13.0
 	github.com/senzing-garage/go-cmdhelping v0.3.4
 	github.com/senzing-garage/go-grpcing v0.2.2
-	github.com/senzing-garage/go-helpers v0.6.11
+	github.com/senzing-garage/go-helpers v0.6.12
 	github.com/senzing-garage/go-observing v0.3.4
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
