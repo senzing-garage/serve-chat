@@ -1,6 +1,6 @@
 module github.com/senzing-garage/serve-chat
 
-go 1.24
+go 1.24.4
 
 require (
 	github.com/flowchartsman/swaggerui v0.0.0-20221017034628-909ed4f3701b
@@ -10,7 +10,7 @@ require (
 	github.com/senzing-garage/go-cmdhelping v0.3.6
 	github.com/senzing-garage/go-grpcing v0.2.2
 	github.com/senzing-garage/go-helpers v0.6.13
-	github.com/senzing-garage/go-observing v0.3.5
+	github.com/senzing-garage/go-observing v0.3.6
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
 	github.com/stretchr/testify v1.10.0
@@ -49,10 +49,10 @@ require (
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/exp v0.0.0-20250531010427-b6e5de432a8b // indirect
-	golang.org/x/net v0.40.0 // indirect
-	golang.org/x/sync v0.14.0 // indirect
+	golang.org/x/net v0.41.0 // indirect
+	golang.org/x/sync v0.15.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
-	golang.org/x/text v0.25.0 // indirect
+	golang.org/x/text v0.26.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250603155806-513f23925822 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
