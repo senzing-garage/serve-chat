@@ -18,6 +18,7 @@ func Test_docsAction(test *testing.T) {
 	test.Parallel()
 
 	var buffer bytes.Buffer
+
 	err := cmd.DocsAction(&buffer, "/tmp")
 	require.NoError(test, err)
 }
